@@ -85,7 +85,22 @@ class _NutritionLogScreenState extends State<NutritionLogScreen> {
     
     return Scaffold(
       appBar: AppBar(
-      ],)
-    )
+        title: const Text('Nutrition Log'),
+      ),
+      body: _isLoading ? const Center(child: CircularProgressIndicator()) : ListView.builder(
+          itemCount: nutritionLogs.length,
+          itemBuilder: (context, index) {
+            final log = nutritionLogs[index];
+            return CheckboxListTile(
+              title: Text(log.date),
+              subtitle: Text(log.log),
+              value: true,
+              onChanged: (_) async {
+                await _presenter.addNutritionLog(log.date, log.log);
+                setState(() {});
+              },
+            );
+  })
+    );
   }
 }
