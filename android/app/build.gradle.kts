@@ -8,6 +8,8 @@ android {
     namespace = "com.example.groupmeepeatright"
     compileSdk = flutter.compileSdkVersion
     ndkVersion = flutter.ndkVersion
+    id("com.android.application")
+    id("com.google.gms.google-services")
 
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
@@ -36,6 +38,10 @@ android {
             signingConfig = signingConfigs.getByName("debug")
         }
     }
+}
+
+dependencies {
+    implementation(platform("com.google.firebase:firebase-bom:35.1.0"))
 }
 
 kotlin {
