@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'login_screen.dart';
 import 'signup_screen.dart';
 import 'profile_screen.dart';
+import '../home_screen.dart';
 
 class MainNavigationScreen extends StatefulWidget {
   const MainNavigationScreen({super.key});
@@ -16,6 +17,7 @@ class _MainNavigationScreenState
   int _selectedIndex = 0;
 
   final List<Widget> _screens = [
+    HomeScreen(),
     LoginScreen(),
     SignupScreen(),
     ProfileScreen(),
@@ -37,6 +39,10 @@ class _MainNavigationScreenState
         currentIndex: _selectedIndex,
         onTap: _onItemTapped,
         items: const [
+          BottomNavigationBarItem(
+            icon: Icon(Icons.home),
+            label: 'Home',
+          ),
           BottomNavigationBarItem(
             icon: Icon(Icons.login),
             label: 'Login',
