@@ -1,22 +1,26 @@
 import 'package:flutter/material.dart';
-import 'home_screen.dart';
+import 'login_screen.dart';
+import 'signup_screen.dart';
 import 'profile_screen.dart';
-import 'discover_screen.dart';
+import '../views/home_screen.dart';
 
 class MainNavigationScreen extends StatefulWidget {
   const MainNavigationScreen({super.key});
 
   @override
-  State<MainNavigationScreen> createState() => _MainNavigationScreenState();
+  State<MainNavigationScreen> createState() =>
+      _MainNavigationScreenState();
 }
 
-class _MainNavigationScreenState extends State<MainNavigationScreen> {
+class _MainNavigationScreenState
+    extends State<MainNavigationScreen> {
   int _selectedIndex = 0;
 
   final List<Widget> _screens = [
-    const HomeScreen(),
-    const DiscoverScreen(),
-    ProfileScreen()
+    HomeScreen(),
+    LoginScreen(),
+    SignupScreen(),
+    ProfileScreen(),
   ];
 
   void _onItemTapped(int index) {
@@ -34,19 +38,18 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
         unselectedItemColor: Colors.grey,
         currentIndex: _selectedIndex,
         onTap: _onItemTapped,
-        
-        items: const[
+        items: const [
           BottomNavigationBarItem(
             icon: Icon(Icons.home),
             label: 'Home',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.list),
-            label: 'Assignments',
+            icon: Icon(Icons.login),
+            label: 'Login',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.book),
-            label: 'Courses',
+            icon: Icon(Icons.person_add),
+            label: 'Sign Up',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.person),
