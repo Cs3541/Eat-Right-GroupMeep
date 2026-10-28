@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "839745776773",
+    "project_id": "groupmeep-eat-right",
+    "storage_bucket": "groupmeep-eat-right.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:839745776773:android:b177866a04256078b14dec",
+        "android_client_info": {
+          "package_name": "com.example.groupmeepeatright"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD83nZ3lGEUj-2wWSdIQ-w-Pe8vRJdpuVw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
