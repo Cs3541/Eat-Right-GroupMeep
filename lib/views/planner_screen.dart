@@ -226,7 +226,6 @@ class _WeeklyCalendarScreenState extends State<WeeklyCalendarScreen> {
   @override
   Widget build(BuildContext context) {
     final pages = [
-      HomeScreen(),
       _buildCalendarPage(context),
       _buildPlaceholderPage(Icons.check_circle_outline, 'Tasks'),
       _buildPlaceholderPage(Icons.settings_outlined, 'Settings'),
