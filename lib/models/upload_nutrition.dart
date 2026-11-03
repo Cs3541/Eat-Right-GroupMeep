@@ -42,38 +42,93 @@ import 'package:flutter/services.dart' show rootBundle;
 
 /// Unit of every numeric field, as found in the CSV.
 const Map<String, String> nutritionUnits = {
-  'serving_size': 'g', 'calories': 'kcal', 'total_fat': 'g',
-  'saturated_fat': 'g', 'cholesterol': 'mg', 'sodium': 'mg', 'choline': 'mg',
-  'folate': 'mcg', 'folic_acid': 'mcg', 'niacin': 'mg',
-  'pantothenic_acid': 'mg', 'riboflavin': 'mg', 'thiamin': 'mg',
-  'vitamin_a': 'IU', 'vitamin_a_rae': 'mcg', 'carotene_alpha': 'mcg',
-  'carotene_beta': 'mcg', 'cryptoxanthin_beta': 'mcg',
-  'lutein_zeaxanthin': 'mcg', 'lucopene': 'mcg', 'vitamin_b12': 'mcg',
-  'vitamin_b6': 'mg', 'vitamin_c': 'mg', 'vitamin_d': 'IU', 'vitamin_e': 'mg',
-  'tocopherol_alpha': 'mg', 'vitamin_k': 'mcg', 'calcium': 'mg',
-  'copper': 'mg', 'irom': 'mg', 'magnesium': 'mg', 'manganese': 'mg',
-  'phosphorous': 'mg', 'potassium': 'mg', 'selenium': 'mcg', 'zink': 'mg',
-  'protein': 'g', 'alanine': 'g', 'arginine': 'g', 'aspartic_acid': 'g',
-  'cystine': 'g', 'glutamic_acid': 'g', 'glycine': 'g', 'histidine': 'g',
-  'hydroxyproline': 'g', 'isoleucine': 'g', 'leucine': 'g', 'lysine': 'g',
-  'methionine': 'g', 'phenylalanine': 'g', 'proline': 'g', 'serine': 'g',
-  'threonine': 'g', 'tryptophan': 'g', 'tyrosine': 'g', 'valine': 'g',
-  'carbohydrate': 'g', 'fiber': 'g', 'sugars': 'g', 'fructose': 'g',
-  'galactose': 'g', 'glucose': 'g', 'lactose': 'g', 'maltose': 'g',
-  'sucrose': 'g', 'fat': 'g', 'saturated_fatty_acids': 'g',
-  'monounsaturated_fatty_acids': 'g', 'polyunsaturated_fatty_acids': 'g',
-  'fatty_acids_total_trans': 'mg', 'alcohol': 'g', 'ash': 'g',
-  'caffeine': 'mg', 'theobromine': 'mg', 'water': 'g',
+  'serving_size': 'g',
+  'calories': 'kcal',
+  'total_fat': 'g',
+  'saturated_fat': 'g',
+  'cholesterol': 'mg',
+  'sodium': 'mg',
+  'choline': 'mg',
+  'folate': 'mcg',
+  'folic_acid': 'mcg',
+  'niacin': 'mg',
+  'pantothenic_acid': 'mg',
+  'riboflavin': 'mg',
+  'thiamin': 'mg',
+  'vitamin_a': 'IU',
+  'vitamin_a_rae': 'mcg',
+  'carotene_alpha': 'mcg',
+  'carotene_beta': 'mcg',
+  'cryptoxanthin_beta': 'mcg',
+  'lutein_zeaxanthin': 'mcg',
+  'lucopene': 'mcg',
+  'vitamin_b12': 'mcg',
+  'vitamin_b6': 'mg',
+  'vitamin_c': 'mg',
+  'vitamin_d': 'IU',
+  'vitamin_e': 'mg',
+  'tocopherol_alpha': 'mg',
+  'vitamin_k': 'mcg',
+  'calcium': 'mg',
+  'copper': 'mg',
+  'irom': 'mg',
+  'magnesium': 'mg',
+  'manganese': 'mg',
+  'phosphorous': 'mg',
+  'potassium': 'mg',
+  'selenium': 'mcg',
+  'zink': 'mg',
+  'protein': 'g',
+  'alanine': 'g',
+  'arginine': 'g',
+  'aspartic_acid': 'g',
+  'cystine': 'g',
+  'glutamic_acid': 'g',
+  'glycine': 'g',
+  'histidine': 'g',
+  'hydroxyproline': 'g',
+  'isoleucine': 'g',
+  'leucine': 'g',
+  'lysine': 'g',
+  'methionine': 'g',
+  'phenylalanine': 'g',
+  'proline': 'g',
+  'serine': 'g',
+  'threonine': 'g',
+  'tryptophan': 'g',
+  'tyrosine': 'g',
+  'valine': 'g',
+  'carbohydrate': 'g',
+  'fiber': 'g',
+  'sugars': 'g',
+  'fructose': 'g',
+  'galactose': 'g',
+  'glucose': 'g',
+  'lactose': 'g',
+  'maltose': 'g',
+  'sucrose': 'g',
+  'fat': 'g',
+  'saturated_fatty_acids': 'g',
+  'monounsaturated_fatty_acids': 'g',
+  'polyunsaturated_fatty_acids': 'g',
+  'fatty_acids_total_trans': 'mg',
+  'alcohol': 'g',
+  'ash': 'g',
+  'caffeine': 'mg',
+  'theobromine': 'mg',
+  'water': 'g',
 };
 
 /// Firestore allows at most 500 writes per batch.
 const int _batchSize = 500;
 
-final RegExp _valuePattern = RegExp(r'^\s*(-?[0-9]*\.?[0-9]+)\s*([A-Za-z]*)\s*$');
+final RegExp _valuePattern = RegExp(
+  r'^\s*(-?[0-9]*\.?[0-9]+)\s*([A-Za-z]*)\s*$',
+);
 
 /// Reads the CSV from the app's assets and writes one document per row.
 Future<void> uploadNutritionCsv({
-  String assetPath = 'assets/nutrition.csv',
+  String assetPath = 'files/nutrition.csv',
   String collection = 'nutrition',
   void Function(int done, int total)? onProgress,
 }) async {
@@ -82,7 +137,10 @@ Future<void> uploadNutritionCsv({
   if (rows.isEmpty) throw StateError('CSV is empty');
 
   final header = rows.first.map((h) => h.trim()).toList();
-  final dataRows = rows.skip(1).where((r) => r.any((c) => c.isNotEmpty)).toList();
+  final dataRows = rows
+      .skip(1)
+      .where((r) => r.any((c) => c.isNotEmpty))
+      .toList();
 
   final firestore = FirebaseFirestore.instance;
   final col = firestore.collection(collection);

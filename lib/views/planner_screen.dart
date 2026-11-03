@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 
-/// Run standalone with: flutter run (set this as lib/main.dart),
-/// or drop [WeeklyCalendarScreen] into your existing app.
-void main() => runApp(const CalendarApp());
+import 'main_navigation.dart';
+import '../home_screen.dart';
+
+//void main() => runApp(const CalendarApp());
 
 class CalendarApp extends StatelessWidget {
   const CalendarApp({super.key});
@@ -12,10 +13,7 @@ class CalendarApp extends StatelessWidget {
     return MaterialApp(
       title: 'Weekly Calendar',
       debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        colorSchemeSeed: Colors.indigo,
-        useMaterial3: true,
-      ),
+      theme: ThemeData(colorSchemeSeed: Colors.indigo, useMaterial3: true),
       home: const WeeklyCalendarScreen(),
     );
   }
@@ -47,8 +45,18 @@ class _WeeklyCalendarScreenState extends State<WeeklyCalendarScreen> {
 
   static const _dayLabels = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
   static const _monthNames = [
-    'January', 'February', 'March', 'April', 'May', 'June',
-    'July', 'August', 'September', 'October', 'November', 'December',
+    'January',
+    'February',
+    'March',
+    'April',
+    'May',
+    'June',
+    'July',
+    'August',
+    'September',
+    'October',
+    'November',
+    'December',
   ];
 
   @override
@@ -70,9 +78,9 @@ class _WeeklyCalendarScreenState extends State<WeeklyCalendarScreen> {
   /// Built with the calendar constructor (not Duration) so DST shifts
   /// never push a date off by one.
   List<DateTime> get _weekDays => List.generate(
-        7,
-        (i) => DateTime(_weekStart.year, _weekStart.month, _weekStart.day + i),
-      );
+    7,
+    (i) => DateTime(_weekStart.year, _weekStart.month, _weekStart.day + i),
+  );
 
   bool _isSameDay(DateTime a, DateTime b) =>
       a.year == b.year && a.month == b.month && a.day == b.day;
@@ -138,8 +146,9 @@ class _WeeklyCalendarScreenState extends State<WeeklyCalendarScreen> {
       if (a.time == null && b.time == null) return 0;
       if (a.time == null) return -1;
       if (b.time == null) return 1;
-      return (a.time!.hour * 60 + a.time!.minute)
-          .compareTo(b.time!.hour * 60 + b.time!.minute);
+      return (a.time!.hour * 60 + a.time!.minute).compareTo(
+        b.time!.hour * 60 + b.time!.minute,
+      );
     });
     return list;
   }
@@ -152,8 +161,10 @@ class _WeeklyCalendarScreenState extends State<WeeklyCalendarScreen> {
       context: context,
       builder: (ctx) => StatefulBuilder(
         builder: (ctx, setDialogState) => AlertDialog(
-          title: Text('New event · ${_dayLabels[_selectedDay.weekday % 7]} '
-              '${_selectedDay.month}/${_selectedDay.day}'),
+          title: Text(
+            'New event · ${_dayLabels[_selectedDay.weekday % 7]} '
+            '${_selectedDay.month}/${_selectedDay.day}',
+          ),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -165,7 +176,9 @@ class _WeeklyCalendarScreenState extends State<WeeklyCalendarScreen> {
               const SizedBox(height: 12),
               OutlinedButton.icon(
                 icon: const Icon(Icons.access_time),
-                label: Text(time == null ? 'Add time (optional)' : time!.format(ctx)),
+                label: Text(
+                  time == null ? 'Add time (optional)' : time!.format(ctx),
+                ),
                 onPressed: () async {
                   final t = await showTimePicker(
                     context: ctx,
@@ -213,6 +226,7 @@ class _WeeklyCalendarScreenState extends State<WeeklyCalendarScreen> {
   @override
   Widget build(BuildContext context) {
     final pages = [
+      HomeScreen(),
       _buildCalendarPage(context),
       _buildPlaceholderPage(Icons.check_circle_outline, 'Tasks'),
       _buildPlaceholderPage(Icons.settings_outlined, 'Settings'),
@@ -220,7 +234,7 @@ class _WeeklyCalendarScreenState extends State<WeeklyCalendarScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(['Calendar', 'Tasks', 'Settings'][_navIndex]),
+        title: Text(['Calendar', 'Home', 'Settings'][_navIndex]),
         actions: _navIndex == 0
             ? [
                 IconButton(
@@ -252,7 +266,7 @@ class _WeeklyCalendarScreenState extends State<WeeklyCalendarScreen> {
           NavigationDestination(
             icon: Icon(Icons.check_circle_outline),
             selectedIcon: Icon(Icons.check_circle),
-            label: 'Tasks',
+            label: 'Home',
           ),
           NavigationDestination(
             icon: Icon(Icons.settings_outlined),
@@ -291,8 +305,9 @@ class _WeeklyCalendarScreenState extends State<WeeklyCalendarScreen> {
                   child: Text(
                     _weekRangeLabel(),
                     textAlign: TextAlign.center,
-                    style: theme.textTheme.titleMedium
-                        ?.copyWith(fontWeight: FontWeight.w600),
+                    style: theme.textTheme.titleMedium?.copyWith(
+                      fontWeight: FontWeight.w600,
+                    ),
                   ),
                 ),
                 IconButton(
@@ -308,7 +323,9 @@ class _WeeklyCalendarScreenState extends State<WeeklyCalendarScreen> {
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 8),
             child: Row(
-              children: _weekDays.map((day) => Expanded(child: _buildDayCell(day))).toList(),
+              children: _weekDays
+                  .map((day) => Expanded(child: _buildDayCell(day)))
+                  .toList(),
             ),
           ),
 
@@ -332,8 +349,9 @@ class _WeeklyCalendarScreenState extends State<WeeklyCalendarScreen> {
                 ? Center(
                     child: Text(
                       'No events. Tap + to add one.',
-                      style: theme.textTheme.bodyMedium
-                          ?.copyWith(color: theme.colorScheme.outline),
+                      style: theme.textTheme.bodyMedium?.copyWith(
+                        color: theme.colorScheme.outline,
+                      ),
                     ),
                   )
                 : ListView.builder(
