@@ -1,107 +1,107 @@
-import 'package:flutter/material.dart';
-import '../presenters/nutrition_log_presenter.dart';
+// import 'package:flutter/material.dart';
+// import '../presenters/nutrition_log_presenter.dart';
 
-class NutritionLogScreen extends StatefulWidget {
-  const NutritionLogScreen({super.key});
+// class NutritionLogScreen extends StatefulWidget {
+//   const NutritionLogScreen({super.key});
 
-  @override
-  State<NutritionLogScreen> createState() => _NutritionLogScreenState();
-}
+//   @override
+//   State<NutritionLogScreen> createState() => _NutritionLogScreenState();
+// }
 
-class _NutritionLogScreenState extends State<NutritionLogScreen> {
-  final NutritionLogPresenter _presenter = NutritionLogPresenter();
+// class _NutritionLogScreenState extends State<NutritionLogScreen> {
+//   final NutritionLogPresenter _presenter = NutritionLogPresenter();
 
-  bool _isLoading = true;
+//   bool _isLoading = true;
 
-  @override
-  void initState() {
-    super.initState();
-    _loadData();
-  }
+//   @override
+//   void initState() {
+//     super.initState();
+//     _loadData();
+//   }
 
-  Future<void> _loadData() async {
-    await _presenter.loadNutritionLogs();
-    setState(() {
-      _isLoading = false;
-    });
-  }
+//   Future<void> _loadData() async {
+//     await _presenter.loadNutritionLogs();
+//     setState(() {
+//       _isLoading = false;
+//     });
+//   }
 
-  Future<void> _loadNutritionLogs() async {
-    await _presenter.loadNutritionLogs();
-    setState(() => _isLoading = false);
-  }
+//   Future<void> _loadNutritionLogs() async {
+//     await _presenter.loadNutritionLogs();
+//     setState(() => _isLoading = false);
+//   }
 
-  void _showAddNutritionLogDialog() {
-    String newDate = '';
-    String newLog ='';
-    showAdaptiveDialog(
-      context: context,
-      builder: (BuildContext dialogContext) {
-        return StatefulBuilder(
-          builder: (context, setDialogState) {
-            return AlertDialog(
-              title: const Text('Add log'),
-              content: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  TextField(
-                    decoration: const InputDecoration(
-                      hintText: 'enter date',
-                    ),
-                    onChanged: (value) {
-                      newDate = value;
-                    },
-                  ),
-                  const SizedBox(height: 12),
+//   void _showAddNutritionLogDialog() {
+//     String newDate = '';
+//     String newLog ='';
+//     showAdaptiveDialog(
+//       context: context,
+//       builder: (BuildContext dialogContext) {
+//         return StatefulBuilder(
+//           builder: (context, setDialogState) {
+//             return AlertDialog(
+//               title: const Text('Add log'),
+//               content: Column(
+//                 mainAxisSize: MainAxisSize.min,
+//                 children: [
+//                   TextField(
+//                     decoration: const InputDecoration(
+//                       hintText: 'enter date',
+//                     ),
+//                     onChanged: (value) {
+//                       newDate = value;
+//                     },
+//                   ),
+//                   const SizedBox(height: 12),
 
 
-                ],
-              ),
-              actions: [
-                TextButton(
-                  onPressed: () => Navigator.pop(context),
-                  child: const Text('Cancel'),
-                ),
-                TextButton(
-                  onPressed: () async {
-                    if (newDate.trim().isNotEmpty != null) {
-                      await _presenter.addNutritionLog(newDate.trim(), newLog.trim());
-                      setState(() {});
-                      Navigator.pop(dialogContext);
-                    };
-                  },
-                  child: const Text('Add'),
-                ),
-              ],
-            );
-          },
-        );
-      },
-    );
-  }
+//                 ],
+//               ),
+//               actions: [
+//                 TextButton(
+//                   onPressed: () => Navigator.pop(context),
+//                   child: const Text('Cancel'),
+//                 ),
+//                 TextButton(
+//                   onPressed: () async {
+//                     if (newDate.trim().isNotEmpty != null) {
+//                       await _presenter.addNutritionLog(newDate.trim(), newLog.trim());
+//                       setState(() {});
+//                       Navigator.pop(dialogContext);
+//                     };
+//                   },
+//                   child: const Text('Add'),
+//                 ),
+//               ],
+//             );
+//           },
+//         );
+//       },
+//     );
+//   }
 
-  @override
-  Widget build(BuildContext context) {
-    final nutritionLogs = _presenter.nutritionLog;
+//   @override
+//   Widget build(BuildContext context) {
+//     final nutritionLogs = _presenter.nutritionLog;
     
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Nutrition Log'),
-      ),
-      body: _isLoading ? const Center(child: CircularProgressIndicator()) : ListView.builder(
-          itemCount: nutritionLogs.length,
-          itemBuilder: (context, index) {
-            final log = nutritionLogs[index];
-            return CheckboxListTile(
-              title: Text(log.date),
-              subtitle: Text(log.log),
-              value: true,
-              onChanged: (_) async {
-                await _presenter.addNutritionLog(log.date, log.log);
-                setState(() {});
-              },
-            );
-  })
-    );
-  }
-}
+//     return Scaffold(
+//       appBar: AppBar(
+//         title: const Text('Nutrition Log'),
+//       ),
+//       body: _isLoading ? const Center(child: CircularProgressIndicator()) : ListView.builder(
+//           itemCount: nutritionLogs.length,
+//           itemBuilder: (context, index) {
+//             final log = nutritionLogs[index];
+//             return CheckboxListTile(
+//               title: Text(log.date),
+//               subtitle: Text(log.log),
+//               value: true,
+//               onChanged: (_) async {
+//                 await _presenter.addNutritionLog(log.date, log.log);
+//                 setState(() {});
+//               },
+//             );
+//   })
+//     );
+//   }
+// }
