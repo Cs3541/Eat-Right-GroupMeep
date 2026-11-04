@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+// import 'browse_screen.dart';
 import 'login_screen.dart';
 import 'signup_screen.dart';
 import 'profile_screen.dart';
@@ -23,6 +24,7 @@ class _MainNavigationScreenState
     SignupScreen(),
     ProfileScreen(),
     AnalyticsPageScreen(),
+    // BrowseScreen(),
   ];
 
   void _onItemTapped(int index) {
@@ -60,7 +62,11 @@ class _MainNavigationScreenState
           BottomNavigationBarItem(
             icon: Icon(Icons.analytics),
             label: 'Analytics',
-          )
+          ),
+          // BottomNavigationBarItem(
+          //   icon: Icon(Icons.search),
+          //   label: 'Browse',
+          // )
         ],
       ),
     );
