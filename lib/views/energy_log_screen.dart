@@ -33,6 +33,7 @@ class _EnergyLogScreenState extends State<EnergyLogScreen> {
 
   void _showAddEnergyLogDialog() {
     String newDate = '';
+    String newLog ='';
     showAdaptiveDialog(
       context: context,
       builder: (BuildContext dialogContext) {
@@ -63,10 +64,10 @@ class _EnergyLogScreenState extends State<EnergyLogScreen> {
                 TextButton(
                   onPressed: () async {
                     if (newDate.trim().isNotEmpty != null) {
-                      await _presenter.addEnergyLog(newDate.trim());
+                      await _presenter.addEnergyLog(newDate.trim(), newLog.trim());
                       setState(() {});
                       Navigator.pop(dialogContext);
-                    },
+                    };
                   },
                   child: const Text('Add'),
                 ),

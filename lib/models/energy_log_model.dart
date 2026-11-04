@@ -18,7 +18,9 @@ class EnergyLog {
   static Future<List<EnergyLog>> fetchEnergyLogs() async {
     final userId = _auth.currentUser?.uid;
     if (userId == null) return [];
+    final List<EnergyLog> energyLogs = [];
 
+    final snapshot = await _db.child('energy_logs/$userId').get();
     if (snapshot.exists) {
       final data = Map<String, dynamic>.from(snapshot.value as Map);
       data.forEach((key, value) {
