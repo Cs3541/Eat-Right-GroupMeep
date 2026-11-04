@@ -43,7 +43,7 @@ class _MainNavigationScreenState
    
         final List<Widget> loggedInScreens = [
           HomeScreen(),
-          BrowseScreen(),
+          // BrowseScreen(),
           AnalyticsPageScreen(),
           ProfileScreen(),
         ];
@@ -64,10 +64,10 @@ class _MainNavigationScreenState
                       icon: Icon(Icons.home),
                       label: 'Home',
                     ),
-                    BottomNavigationBarItem(
-                      icon: Icon(Icons.search),
-                      label: 'Browse',
-                    ),
+                    // BottomNavigationBarItem(
+                    //   icon: Icon(Icons.search),
+                    //   label: 'Browse',
+                    // ),
                     BottomNavigationBarItem(
                       icon: Icon(Icons.analytics),
                       label: 'Analytics',
