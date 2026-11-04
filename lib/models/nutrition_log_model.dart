@@ -16,8 +16,10 @@ class NutritionLog {
   static final _auth = FirebaseAuth.instance;
 
   static Future<List<NutritionLog>> fetchLogs() async {
-    final userId - _auth.currentUser?.uid;
+    final userId = _auth.currentUser?.uid;
     if (userId == null) return [];
+    final snapshot = await _db.child('nutrition_logs/$userId').get();
+    final List<NutritionLog> nutritionLogs = [];
 
     if (snapshot.exists) {
       final data = Map<String, dynamic>.from(snapshot.value as Map);

@@ -33,6 +33,7 @@ class _NutritionLogScreenState extends State<NutritionLogScreen> {
 
   void _showAddNutritionLogDialog() {
     String newDate = '';
+    String newLog ='';
     showAdaptiveDialog(
       context: context,
       builder: (BuildContext dialogContext) {
@@ -64,10 +65,10 @@ class _NutritionLogScreenState extends State<NutritionLogScreen> {
                 TextButton(
                   onPressed: () async {
                     if (newDate.trim().isNotEmpty != null) {
-                      await _presenter.addNutritionLog(newDate.trim());
+                      await _presenter.addNutritionLog(newDate.trim(), newLog.trim());
                       setState(() {});
                       Navigator.pop(dialogContext);
-                    },
+                    };
                   },
                   child: const Text('Add'),
                 ),

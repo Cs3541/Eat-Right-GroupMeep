@@ -3,6 +3,7 @@ import 'login_screen.dart';
 import 'signup_screen.dart';
 import 'profile_screen.dart';
 import '../home_screen.dart';
+import 'analytics_page_screen.dart';
 
 class MainNavigationScreen extends StatefulWidget {
   const MainNavigationScreen({super.key});
@@ -21,6 +22,7 @@ class _MainNavigationScreenState
     LoginScreen(),
     SignupScreen(),
     ProfileScreen(),
+    AnalyticsPageScreen(),
   ];
 
   void _onItemTapped(int index) {
@@ -55,6 +57,10 @@ class _MainNavigationScreenState
             icon: Icon(Icons.person),
             label: 'Profile',
           ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.analytics),
+            label: 'Analytics',
+          )
         ],
       ),
     );
