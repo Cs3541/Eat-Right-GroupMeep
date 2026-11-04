@@ -1,5 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_database/firebase_database.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class EnergyLog {
   final String dateEnergy;
@@ -12,7 +12,7 @@ class EnergyLog {
     }
   );
 
-  static final _db = FirebaseDatabase.instance.ref();
+  static final _db = FirebaseFirestore.instance;
   static final _auth = FirebaseAuth.instance;
 
   static Future<List<EnergyLog>> fetchEnergyLogs() async {
@@ -20,9 +20,9 @@ class EnergyLog {
     if (userId == null) return [];
     final List<EnergyLog> energyLogs = [];
 
-    final snapshot = await _db.child('energy_logs/$userId').get();
+    final snapshot = await _db.collection('energy_logs').doc(userId).get();
     if (snapshot.exists) {
-      final data = Map<String, dynamic>.from(snapshot.value as Map);
+      final data = snapshot.data() as Map<String, dynamic>;
       data.forEach((key, value) {
         energyLogs.add(EnergyLog (
           dateEnergy: value['dateEnergy'],
@@ -36,10 +36,10 @@ class EnergyLog {
   static Future<void> addEnergyLog(String dateEnergy, String logEnergy) async {
     final userId = _auth.currentUser?.uid;
     if (userId == null) return;
-    final newRef = _db.child('energy_logs/$userId').push();
+    final newRef = _db.collection('energy_logs').doc(userId);
     await newRef.set({
-      'date': dateEnergy,
-      'log': logEnergy,
+      'dateEnergy': dateEnergy,
+      'logEnergy': logEnergy,
     });
   }
 
