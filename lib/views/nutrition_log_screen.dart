@@ -20,11 +20,15 @@ class _NutritionLogScreenState extends State<NutritionLogScreen> {
   }
 
   Future<void> _loadData() async {
-    await _presenter.loadNutritionLogs();
-    setState(() {
-      _isLoading = false;
-    });
-  }
+  await _presenter.loadNutritionLogs();
+
+  if (!mounted) return;
+
+  setState(() {
+    _isLoading = false;
+    // Keep your existing screen updates here
+  });
+}
 
   Future<void> _loadNutritionLogs() async {
     await _presenter.loadNutritionLogs();
