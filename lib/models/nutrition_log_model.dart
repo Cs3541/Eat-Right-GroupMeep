@@ -1,45 +1,36 @@
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_database/firebase_database.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class NutritionLog {
   final String date;
   final String log;
+  NutritionLog({required this.date, required this.log});
 
-  NutritionLog(
-    {
-      required this.date,
-      required this.log,
-    }
-  );
-
-  static final _db = FirebaseDatabase.instance.ref();
+  static final _firestore = FirebaseFirestore.instance;
   static final _auth = FirebaseAuth.instance;
 
   static Future<List<NutritionLog>> fetchLogs() async {
     final userId = _auth.currentUser?.uid;
     if (userId == null) return [];
-    final snapshot = await _db.child('nutrition_logs/$userId').get();
-    final List<NutritionLog> nutritionLogs = [];
 
-    if (snapshot.exists) {
-      final data = Map<String, dynamic>.from(snapshot.value as Map);
-      data.forEach((key, value) {
-        nutritionLogs.add(NutritionLog (
-          date: value['date'],
-          log: value['log'],
-        ));
-      });
-    }
-    return nutritionLogs;
+    final snapshot = await _firestore.collection('nutriton logs').where('userId', isEqualTo: userId).get();
+
+    return snapshot.docs.map((doc) {
+      final data = doc.data();
+      return NutritionLog(
+        date: data['date'],
+        log: data['log'],
+      );
+    }).toList();
   }
 
   static Future<void> addLog(String date, String log) async {
     final userId = _auth.currentUser?.uid;
     if (userId == null) return;
-    final newRef = _db.child('nutrition_logs/$userId').push();
-    await newRef.set({
-      'date': date,
+    await _firestore.collection('nutrition logs').add({
       'log': log,
+      'date': date,
+      'userId': userId,
     });
   }
 }
