@@ -16,15 +16,10 @@ class _EnergyLogScreenState extends State<EnergyLogScreen> {
   @override
   void initState() {
     super.initState();
-    _loadData();
+    _loadEnergyLogs();
   }
 
-  Future<void> _loadData() async {
-    await _presenter.loadEnergyLogs();
-    setState(() {
-      _isLoading = false;
-    });
-  }
+
 
   Future<void> _loadEnergyLogs() async {
     await _presenter.loadEnergyLogs();
@@ -34,46 +29,41 @@ class _EnergyLogScreenState extends State<EnergyLogScreen> {
   void _showAddEnergyLogDialog() {
     String newDate = '';
     String newLog ='';
-    showAdaptiveDialog(
-      context: context,
-      builder: (BuildContext dialogContext) {
-        return StatefulBuilder(
-          builder: (context, setDialogState) {
-            return AlertDialog(
-              title: const Text('Add log'),
-              content: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  TextField(
-                    decoration: const InputDecoration(
-                      hintText: 'enter date',
-                    ),
-                    onChanged: (value) {
-                      newDate = value;
-                    },
-                  ),
 
-                  const SizedBox(height: 12),
-                ],
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text('Add Energy Log'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TextField(
+                decoration: const InputDecoration(labelText: 'Date'),
+                onChanged: (value) => newDate = value,
               ),
-              actions: [
-                TextButton(
-                  onPressed: () => Navigator.pop(context),
-                  child: const Text('Cancel'),
-                ),
-                TextButton(
-                  onPressed: () async {
-                    if (newDate.trim().isNotEmpty != null) {
-                      await _presenter.addEnergyLog(newDate.trim(), newLog.trim());
-                      setState(() {});
-                      Navigator.pop(dialogContext);
-                    };
-                  },
-                  child: const Text('Add'),
-                ),
-              ],
-            );
-          },
+              TextField(
+                decoration: const InputDecoration(labelText: "Energy Log"),
+                onChanged: (value) => newLog = value,
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text('Cancel'),
+            ),
+            TextButton(
+              onPressed: () async {
+                if (newDate.trim().isNotEmpty) {
+                  await _presenter.addEnergyLog(newDate.trim(), newLog);
+                  setState(() {});
+                  Navigator.pop(context);
+                }
+              },
+              child: const Text('Add'),
+            ),
+          ],
         );
       },
     );
@@ -84,24 +74,21 @@ class _EnergyLogScreenState extends State<EnergyLogScreen> {
     final energyLogs = _presenter.energyLog;
     
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Energy'),
-      ),
+      appBar: AppBar(title: const Text('Energy Logs')),
       body: _isLoading ? const Center(child: CircularProgressIndicator()) : ListView.builder(
         itemCount: energyLogs.length,
         itemBuilder: (context, index) {
-          final log = energyLogs[index];
-          return CheckboxListTile(
-            title: Text(log.dateEnergy),
-            subtitle: Text(log.logEnergy),
-            value: true,
-            onChanged: (_) async {
-              await _presenter.addEnergyLog(log.dateEnergy, log.logEnergy);
-              setState(() {});
-            },
+          final energyLog = energyLogs[index];
+          return ListTile(
+            title: Text(energyLog.dateEnergy),
+            subtitle: energyLog.logEnergy != null ? Text(energyLog.logEnergy!) : null,
           );
-        }
-      )
+        },
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: _showAddEnergyLogDialog,
+        child: const Icon(Icons.add),
+      ),
     );
   }
 }
