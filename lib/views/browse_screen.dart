@@ -156,7 +156,7 @@ class _BrowseScreenState extends State<BrowseScreen> {
                     },
                   ),
                 ),
-                const SizedBox(width: 12.0), // Spacing between dropdowns
+                const SizedBox(width: 6.0), // Spacing between dropdowns
 
                 // Filter by Ingredients
                 Expanded(
@@ -182,6 +182,7 @@ class _BrowseScreenState extends State<BrowseScreen> {
                     },
                   ),
                 ),
+                const SizedBox(width: 6.0), // Spacing between dropdowns
               
                 // Filter by Ethnicity
                 Expanded(
@@ -207,6 +208,7 @@ class _BrowseScreenState extends State<BrowseScreen> {
                     },
                   ),
                 ),
+                const SizedBox(width: 6.0), // Spacing between dropdowns
 
                 // Filter by Other
                 Expanded(
@@ -232,12 +234,25 @@ class _BrowseScreenState extends State<BrowseScreen> {
                     },
                   ),
                 ),
+                const SizedBox(width: 6.0), // Spacing between dropdowns
 
 
               ],
             ),
             const SizedBox(height: 24.0),
             // Display area showing current selections
+            
+            // 1. Recipe Results
+            Container(
+              decoration: BoxDecoration(
+                border: Border.all(color: Colors.black),
+                borderRadius: BorderRadius.circular(10.0), // Rounds all 4 corners
+              ),
+              padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 30.0),
+              child: const Center(
+                child: Text('Recipe Results'),
+              ),
+            ),
             Expanded(
               child: Center(
                 child: Text(
