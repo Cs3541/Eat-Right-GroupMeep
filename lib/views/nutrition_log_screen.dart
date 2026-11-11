@@ -42,11 +42,10 @@ class _NutritionLogScreenState extends
   void _showAddNutritionLogDialog() {
     String newDate = '';
     String newLog ='';
-    String newIron ='';
-    String newCalcium ='';
-    String newFats ='';
-    String newSugars ='';
     String newCalories ='';
+    String newProteins ='';
+    String newFats ='';
+    String newCarbs ='';
 
     showDialog(
       context: context,
@@ -65,21 +64,18 @@ class _NutritionLogScreenState extends
                 onChanged: (value) => newLog = value,
               ),
               TextField(
-                decoration: const InputDecoration(labelText: 'Iron'),
-                onChanged: (value) => newIron = value,
+                decoration: const InputDecoration(labelText: 'Proteins'),
+                onChanged: (value) => newProteins = value,
               ),
               TextField(
-                decoration: const InputDecoration(labelText: 'Calcium'),
-                onChanged: (value) => newCalcium = value,
+                decoration: const InputDecoration(labelText: 'Carbs'),
+                onChanged: (value) => newCarbs = value,
               ),
               TextField(
                 decoration: const InputDecoration(labelText: 'Fats'),
                 onChanged: (value) => newFats = value,
               ),
-              TextField(
-                decoration: const InputDecoration(labelText: 'Sugars'),
-                onChanged: (value) => newSugars = value,
-              ),
+            
               TextField(
                 decoration: const InputDecoration(labelText: 'Calories'),
                 onChanged: (value) => newCalories = value,
@@ -94,7 +90,7 @@ class _NutritionLogScreenState extends
             TextButton(
               onPressed: () async {
                 if (newDate.trim().isNotEmpty) {
-                  await _presenter.addNutritionLog(newDate.trim(), newLog, newIron, newCalcium, newFats, newSugars, newCalories);
+                  await _presenter.addNutritionLog(newDate.trim(), newLog, newCalories, newProteins, newFats, newCarbs);
                   setState(() {});
                   Navigator.pop(context);
                 }
