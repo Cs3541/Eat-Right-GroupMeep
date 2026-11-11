@@ -23,7 +23,9 @@ class _EnergyLogScreenState extends State<EnergyLogScreen> {
 
   Future<void> _loadEnergyLogs() async {
     await _presenter.loadEnergyLogs();
-    setState(() => _isLoading = false);
+    if (mounted) {
+      setState(() => _isLoading = false);
+    }
   }
 
   void _showAddEnergyLogDialog() {

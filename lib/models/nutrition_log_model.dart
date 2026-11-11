@@ -13,7 +13,7 @@ class NutritionLog {
     final userId = _auth.currentUser?.uid;
     if (userId == null) return [];
 
-    final snapshot = await _firestore.collection('nutriton logs').where('userId', isEqualTo: userId).get();
+    final snapshot = await _firestore.collection('nutrition logs').where('userId', isEqualTo: userId).get();
 
     return snapshot.docs.map((doc) {
       final data = doc.data();
