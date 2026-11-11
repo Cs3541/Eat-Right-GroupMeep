@@ -8,7 +8,9 @@ class NutritionLogScreen extends StatefulWidget {
   State<NutritionLogScreen> createState() => _NutritionLogScreenState();
 }
 
-class _NutritionLogScreenState extends State<NutritionLogScreen> {
+class _NutritionLogScreenState extends
+
+ State<NutritionLogScreen> {
   final NutritionLogPresenter _presenter = NutritionLogPresenter();
 
   bool _isLoading = true;
@@ -21,7 +23,9 @@ class _NutritionLogScreenState extends State<NutritionLogScreen> {
 
   Future<void> _loadNutritionLogs() async {
     await _presenter.loadNutritionLogs();
-    setState(() => _isLoading = false);
+    if (mounted) {
+      setState(() => _isLoading = false);
+    }
   }
 
   void _showAddNutritionLogDialog() {
@@ -41,7 +45,7 @@ class _NutritionLogScreenState extends State<NutritionLogScreen> {
                 onChanged: (value) => newDate = value,
               ),
               TextField(
-                decoration: const InputDecoration(labelText: "Nutrition Log"),
+                decoration: const InputDecoration(labelText: "Nutrition Logs"),
                 onChanged: (value) => newLog = value,
               ),
             ],
