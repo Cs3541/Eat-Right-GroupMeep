@@ -1,92 +1,61 @@
 import 'package:flutter/material.dart';
-import '../presenters/recipe_presenter.dart';
 
-class RecipeScreen extends StatefulWidget {
-  const RecipeScreen({super.key});
+class ExampleIngredientModel {
+  final String name;
+  final String measurement;
 
-  @override
-  State<RecipeScreen> createState() => _RecipeScreenState();
+  ExampleIngredientModel({required this.name, required this.measurement});
 }
 
-class _RecipeScreenState extends State<RecipeScreen> {
-  late final RecipePresenter _presenter;
-
-  bool _isLoading = false;
-  RecipeModel? _recipe;
-  String? _errorMessage;
+class RecipePage extends StatefulWidget {
+  const RecipePage({super.key});
 
   @override
-  void initState() {
-    super.initState();
-    _presenter = RecipePresenter(this);
-    _presenter.loadRecipe('123'); // Trigger presenter action
-  }
+  State<RecipePage> createState() => _RecipeScreenState();
+}
 
-  @override
-  void showLoading() {
-    // This method is called by the presenter to indicate loading state
-    setState(() {
-      _isLoading = true;
-      _errorMessage = null;
-    });
-  }
+class _RecipeScreenState extends State<RecipePage> {
 
-  @override
-  void hideLoading() {
-    // This method is called by the presenter to hide loading state
-    setState(() {
-      _isLoading = false;
-    });
-  }
 
-  @override
-  void showRecipe(RecipeModel recipe) {
-    // This method is called by the presenter to display the recipe
-    setState(() {
-      _recipe = recipe;
-    });
-  }
-
-  @override
-  void showError(String message) {
-    // This method is called by the presenter to display an error message
-    setState(() {
-      _errorMessage = message;
-    });
-  }
+  static const String title = 'Recipe Title';
+  static const String recipeId = 'recipeID';
+  static const String createdBy = 'John Chef' ;
+  static const double rating = 4.8;
+  static const String imageTEMP = 'img.jpg';
+  static const List<String> tags = ['tag1', 'tag2', 'tag3'];
+  static const int servings = 2;
+  static const double minutes = 30.0;
+  static final Map<double, ExampleIngredientModel> ingredientsAmounts = {
+    1.0: ExampleIngredientModel(name: 'butter', measurement: 'cup'),
+    2.0: ExampleIngredientModel(name: 'flour', measurement: 'lb'),
+    3.0: ExampleIngredientModel(name: 'sugar', measurement: 'g'),
+  };
+  static const String directions = 'Insert directions here';
+  static const String notes = 'Insert notes here';
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('MVP in Flutter')),
-      body: Center(
-        child: _isLoading
-            ? const CircularProgressIndicator()
-            : _errorMessage != null
-                ? Text(_errorMessage!, style: const TextStyle(color: Colors.red))
-                : _recipe != null
-                    ? Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text('Title: ${_recipe!.title}'),
-                          Text('Rating: ${_recipe!.rating}'),
-                        ],
-                      )
-                    : const Text('No recipe data'),
+      appBar: AppBar(
+        title: const Text(title),
+          actions: [
+            Padding(
+              padding: const EdgeInsets.only(right: 16.0),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(Icons.star, color: Colors.amber, size: 20),
+                  SizedBox(width: 4),
+                  Text(
+                    rating.toString(),
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                  ),
+                ],
+              ),
+            ),
+          ],
+
       ),
-    );
-  }
-}
-
-class RecipePage extends StatelessWidget {
-
-  final RecipePresenter presenter = RecipePresenter();
-  RecipePage({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text('Recipe Page')),
       body: Center(
         child: ElevatedButton(
           onPressed: () {
