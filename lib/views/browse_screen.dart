@@ -250,7 +250,7 @@ class _BrowseScreenState extends State<BrowseScreen> {
                 // Navigate to the second page
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => const RecipePage()),
+                  MaterialPageRoute(builder: (context) => RecipePage()),
                 );
               },
               child: const Text('Go to Recipe Page'),
