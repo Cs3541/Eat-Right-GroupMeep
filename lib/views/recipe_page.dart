@@ -56,13 +56,47 @@ class _RecipeScreenState extends State<RecipePage> {
           ],
 
       ),
-      body: Center(
-        child: ElevatedButton(
-          onPressed: () {
-            // Return to the previous page
-            Navigator.pop(context);
-          },
-          child: const Text('Go Back'),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Text('Posted by: $createdBy'),
+            Container(
+              decoration: BoxDecoration(
+                border: Border.all(color: Colors.black),
+                // borderRadius: BorderRadius.circular(10.0), // Rounds all 4 corners
+              ),
+              padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 30.0),
+              child: const Center(
+                child: Text('<Yummy food picture>'), //THIS IS WHERE THE IMAGE WILL GO
+              ),
+            ),
+
+            Container(
+              decoration: BoxDecoration(
+                border: Border.all(color: Colors.black),
+                // borderRadius: BorderRadius.circular(10.0), // Rounds all 4 corners
+              ),
+              padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 30.0),
+              
+              child: Row(
+                children: [
+                Expanded(
+                  child: Text('Posted by: $createdBy'),
+                ),
+                const SizedBox(width: 12.0), // Spacing between text
+                Expanded(
+                  child: Text('Serves: $servings'),
+                ),
+                const SizedBox(width: 12.0), // Spacing between text
+                Expanded(
+                  child: Text('Time: $minutes'),
+                ),
+                ],
+              ),
+            ),
+          ],
         ),
       ),
     );

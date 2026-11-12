@@ -5,8 +5,6 @@ import 'services/notification_service.dart';
 import 'views/main_navigation.dart';
 import 'views/login_screen.dart';
 
-//
-
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 

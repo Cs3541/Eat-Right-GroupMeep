@@ -242,7 +242,6 @@ class _BrowseScreenState extends State<BrowseScreen> {
               ],
             ),
             const SizedBox(height: 24.0),
-            // Display area showing current selections
             
             // Button to navigate to the Recipe Page
             ElevatedButton(
@@ -255,7 +254,8 @@ class _BrowseScreenState extends State<BrowseScreen> {
               },
               child: const Text('Go to Recipe Page'),
             ),
-            // 1. Recipe Results
+            
+            // Display area showing current selections
             Container(
               decoration: BoxDecoration(
                 border: Border.all(color: Colors.black),
