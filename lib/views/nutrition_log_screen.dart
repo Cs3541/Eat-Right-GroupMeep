@@ -42,6 +42,11 @@ class _NutritionLogScreenState extends
   void _showAddNutritionLogDialog() {
     String newDate = '';
     String newLog ='';
+    String newIron ='';
+    String newCalcium ='';
+    String newFats ='';
+    String newSugars ='';
+    String newCalories ='';
 
     showDialog(
       context: context,
@@ -59,6 +64,26 @@ class _NutritionLogScreenState extends
                 decoration: const InputDecoration(labelText: "Nutrition Logs"),
                 onChanged: (value) => newLog = value,
               ),
+              TextField(
+                decoration: const InputDecoration(labelText: 'Iron'),
+                onChanged: (value) => newIron = value,
+              ),
+              TextField(
+                decoration: const InputDecoration(labelText: 'Calcium'),
+                onChanged: (value) => newCalcium = value,
+              ),
+              TextField(
+                decoration: const InputDecoration(labelText: 'Fats'),
+                onChanged: (value) => newFats = value,
+              ),
+              TextField(
+                decoration: const InputDecoration(labelText: 'Sugars'),
+                onChanged: (value) => newSugars = value,
+              ),
+              TextField(
+                decoration: const InputDecoration(labelText: 'Calories'),
+                onChanged: (value) => newCalories = value,
+              ),
             ],
           ),
           actions: [
@@ -69,7 +94,7 @@ class _NutritionLogScreenState extends
             TextButton(
               onPressed: () async {
                 if (newDate.trim().isNotEmpty) {
-                  await _presenter.addNutritionLog(newDate.trim(), newLog);
+                  await _presenter.addNutritionLog(newDate.trim(), newLog, newIron, newCalcium, newFats, newSugars, newCalories);
                   setState(() {});
                   Navigator.pop(context);
                 }
