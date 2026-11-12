@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'recipe_page.dart';
+
 
 
 class BrowseScreen extends StatefulWidget {
@@ -242,6 +244,17 @@ class _BrowseScreenState extends State<BrowseScreen> {
             const SizedBox(height: 24.0),
             // Display area showing current selections
             
+            // Button to navigate to the Recipe Page
+            ElevatedButton(
+              onPressed: () {
+                // Navigate to the second page
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const RecipePage()),
+                );
+              },
+              child: const Text('Go to Recipe Page'),
+            ),
             // 1. Recipe Results
             Container(
               decoration: BoxDecoration(
