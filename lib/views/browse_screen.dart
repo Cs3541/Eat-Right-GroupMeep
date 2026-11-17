@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'recipe_page.dart';
+
 
 
 class BrowseScreen extends StatefulWidget {
@@ -11,13 +13,29 @@ class BrowseScreen extends StatefulWidget {
 class _BrowseScreenState extends State<BrowseScreen> {
   final TextEditingController _searchController = TextEditingController();
   
-  // State for Dropdown 1
+  // State for SearchBy dropdown
   String? _selectedSearch;
   final List<String> _searchOptions = ['Title', 'Creator'];
 
-  // State for Dropdown 2
+  // State for SortBy dropdown
   String? _selectedSort;
   final List<String> _sortOptions = ['Rating', 'Alphabetical(title)', 'Date Posted'];
+
+  // State for FilterMealType dropdown
+  String? _filterMealType;
+  final List<String> _filterMealTypeOptions = ['Breakfast', 'Lunch', 'Dinner'];
+
+  // State for FilterIngredients dropdown
+  String? _filterIngredients;
+  final List<String> _filterIngredientsOptions = ['Ingredient1', 'Ingredient2', 'Ingredient3'];
+
+  // State for FilterEthnicity dropdown
+  String? _filterEthnicity;
+  final List<String> _filterEthnicityOptions = ['Italian', 'Mexican', 'Indian'];
+
+  // State for FilterOther dropdown
+  String? _filterOther;
+  final List<String> _filterOtherOptions = ['Baked Goods', 'Pasta', 'Salads'];
 
   @override
   void dispose() {
@@ -253,7 +271,10 @@ class _BrowseScreenState extends State<BrowseScreen> {
                 child: Text(
                   'Search: "${_searchController.text}"\n'
                   'Search By: ${_selectedSearch ?? "None"}\n'
-                  'Sort By: ${_selectedSort ?? "None"}',
+                  'Sort By: ${_selectedSort ?? "None"}\n'
+                  'Filter Meal Type: ${_filterMealType ?? "None"}\n'
+                  'Filter Ethnicity: ${_filterEthnicity ?? "None"}\n'
+                  'Filter Other: ${_filterOther ?? "None"}',
                   textAlign: TextAlign.center,
                   style: const TextStyle(fontSize: 16.0, color: Colors.grey),
                 ),
