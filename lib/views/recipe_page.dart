@@ -55,7 +55,7 @@ class _RecipeScreenState extends State<RecipePage> {
             ),
           ],
         ),
-      body: Padding(
+      body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
 
 
@@ -65,16 +65,16 @@ class _RecipeScreenState extends State<RecipePage> {
           children: [
 
             //IMAGE
-            // Container(
-            //   decoration: BoxDecoration(
-            //     border: Border.all(color: Colors.black),
-            //     // borderRadius: BorderRadius.circular(10.0), // Rounds all 4 corners
-            //   ),
-            //   padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 30.0),
-            //   child: const Center(
-            //     child: Text('<Yummy food picture>'), //THIS IS WHERE THE IMAGE WILL GO
-            //   ),
-            // ),
+            Container(
+              decoration: BoxDecoration(
+                border: Border.all(color: Colors.black),
+                // borderRadius: BorderRadius.circular(10.0), // Rounds all 4 corners
+              ),
+              padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 30.0),
+              child: const Center(
+                child: Text('<Yummy food picture>'), //THIS IS WHERE THE IMAGE WILL GO
+              ),
+            ),
 
             //BOX FOR CREATOR, SERVINGS, TIME
             Container(
