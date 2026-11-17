@@ -6,7 +6,7 @@ import 'profile_screen.dart';
 import '../home_screen.dart';
 import 'browse_screen.dart';
 import 'analytics_page_screen.dart';
-import 'dashboard.dart';
+import 'dashboard_screen.dart';
 
 
 class MainNavigationScreen extends StatefulWidget {
