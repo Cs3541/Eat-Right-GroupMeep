@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'recipe_page.dart';
 
 
 
@@ -241,20 +242,20 @@ class _BrowseScreenState extends State<BrowseScreen> {
               ],
             ),
             const SizedBox(height: 24.0),
-            // Display area showing current selections
             
             // Button to navigate to the Recipe Page
-            // ElevatedButton(
-            //   onPressed: () {
-            //     // Navigate to the second page
-            //     Navigator.push(
-            //       context,
-            //       MaterialPageRoute(builder: (context) => RecipePage()),
-            //     );
-            //   },
-            //   child: const Text('Go to Recipe Page'),
-            // ),
-            // 1. Recipe Results
+            ElevatedButton(
+              onPressed: () {
+                // Navigate to the second page
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => RecipePage()),
+                );
+              },
+              child: const Text('Go to Recipe Page'),
+            ),
+            
+            // Display area showing current selections
             Container(
               decoration: BoxDecoration(
                 border: Border.all(color: Colors.black),
