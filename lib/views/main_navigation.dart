@@ -8,6 +8,7 @@ import 'browse_screen.dart';
 import 'analytics_page_screen.dart';
 import 'dashboard.dart';
 
+
 class MainNavigationScreen extends StatefulWidget {
   const MainNavigationScreen({super.key});
 
