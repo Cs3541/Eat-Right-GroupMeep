@@ -110,7 +110,144 @@ class _BrowseScreenState extends State<BrowseScreen> {
             ),
             const SizedBox(height: 24.0),
 
+            const Text(
+              "Filter:"
+            ),
+            // 3. Filter section
+            Row(
+              children: [
+                // Filter by Meal Type
+                Expanded(
+                  child: DropdownButtonFormField<String>(
+                    initialValue: _filterMealType,
+                    decoration: InputDecoration(
+                      labelText: 'Meal Type',
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10.0),
+                      ),
+                      contentPadding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 14.0),
+                    ),
+                    items: _filterMealTypeOptions.map((String search) {
+                      return DropdownMenuItem<String>(
+                        value: search,
+                        child: Text(search),
+                      );
+                    }).toList(),
+                    onChanged: (String? newValue) {
+                      setState(() {
+                        _filterMealType = newValue;
+                      });
+                    },
+                  ),
+                ),
+                const SizedBox(width: 6.0), // Spacing between dropdowns
+
+                // Filter by Ingredients
+                Expanded(
+                  child: DropdownButtonFormField<String>(
+                    initialValue: _filterIngredients,
+                    decoration: InputDecoration(
+                      labelText: 'Ingredients',
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10.0),
+                      ),
+                      contentPadding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 14.0),
+                    ),
+                    items: _filterIngredientsOptions.map((String sort) {
+                      return DropdownMenuItem<String>(
+                        value: sort,
+                        child: Text(sort, overflow: TextOverflow.ellipsis),
+                      );
+                    }).toList(),
+                    onChanged: (String? newValue) {
+                      setState(() {
+                        _filterIngredients = newValue;
+                      });
+                    },
+                  ),
+                ),
+                const SizedBox(width: 6.0), // Spacing between dropdowns
+              
+                // Filter by Ethnicity
+                Expanded(
+                  child: DropdownButtonFormField<String>(
+                    initialValue: _filterEthnicity,
+                    decoration: InputDecoration(
+                      labelText: 'Ethnicity',
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10.0),
+                      ),
+                      contentPadding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 14.0),
+                    ),
+                    items: _filterEthnicityOptions.map((String sort) {
+                      return DropdownMenuItem<String>(
+                        value: sort,
+                        child: Text(sort, overflow: TextOverflow.ellipsis),
+                      );
+                    }).toList(),
+                    onChanged: (String? newValue) {
+                      setState(() {
+                        _filterEthnicity = newValue;
+                      });
+                    },
+                  ),
+                ),
+                const SizedBox(width: 6.0), // Spacing between dropdowns
+
+                // Filter by Other
+                Expanded(
+                  child: DropdownButtonFormField<String>(
+                    initialValue: _filterOther,
+                    decoration: InputDecoration(
+                      labelText: 'Other',
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10.0),
+                      ),
+                      contentPadding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 14.0),
+                    ),
+                    items: _filterOtherOptions.map((String sort) {
+                      return DropdownMenuItem<String>(
+                        value: sort,
+                        child: Text(sort, overflow: TextOverflow.ellipsis),
+                      );
+                    }).toList(),
+                    onChanged: (String? newValue) {
+                      setState(() {
+                        _filterOther = newValue;
+                      });
+                    },
+                  ),
+                ),
+                const SizedBox(width: 6.0), // Spacing between dropdowns
+
+
+              ],
+            ),
+            const SizedBox(height: 24.0),
+            
+            // Button to navigate to the Recipe Page
+            ElevatedButton(
+              onPressed: () {
+                // Navigate to the second page
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => RecipePage()),
+                );
+              },
+              child: const Text('Go to Recipe Page'),
+            ),
+            
             // Display area showing current selections
+            Container(
+              decoration: BoxDecoration(
+                border: Border.all(color: Colors.black),
+                borderRadius: BorderRadius.circular(10.0), // Rounds all 4 corners
+              ),
+              padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 30.0),
+              child: const Center(
+                child: Text('Recipe Results'),
+              ),
+            ),
             Expanded(
               child: Center(
                 child: Text(
