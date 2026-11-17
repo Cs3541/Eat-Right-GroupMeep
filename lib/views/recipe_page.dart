@@ -17,27 +17,27 @@ class RecipePage extends StatefulWidget {
 class _RecipeScreenState extends State<RecipePage> {
 
 
-  static const String title = 'Recipe Title';
-  static const String recipeId = 'recipeID';
-  static const String createdBy = 'John Chef' ;
-  static const double rating = 4.8;
-  static const String imageTEMP = 'img.jpg';
-  static const List<String> tags = ['tag1', 'tag2', 'tag3'];
-  static const int servings = 2;
-  static const double minutes = 30.0;
+  String title = 'Recipe Title';
+  final String recipeId = 'recipeID';
+  final String createdBy = 'John Chef';
+  double rating = 4.8;
+  String imageTEMP = 'img.jpg';
+  List<String> tags = ['tag1', 'tag2', 'tag3'];
+  int servings = 2;
+  double minutes = 30.0;
   static final Map<double, ExampleIngredientModel> ingredientsAmounts = {
     1.0: ExampleIngredientModel(name: 'butter', measurement: 'cup'),
     2.0: ExampleIngredientModel(name: 'flour', measurement: 'lb'),
     3.0: ExampleIngredientModel(name: 'sugar', measurement: 'g'),
   };
-  static const String directions = 'Insert directions here';
-  static const String notes = 'Insert notes here';
+  String directions = 'Insert directions here';
+  String notes = 'Insert notes here';
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text(title),
+        title: Text(title),
           actions: [
             Padding(
               padding: const EdgeInsets.only(right: 16.0),
@@ -54,46 +54,154 @@ class _RecipeScreenState extends State<RecipePage> {
               ),
             ),
           ],
-
-      ),
+        ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
+
+
+        // 1. OUTER COLUMN (Vertical)
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
+          mainAxisSize: MainAxisSize.max,
           children: [
-            Text('Posted by: $createdBy'),
+
+            //IMAGE
+            // Container(
+            //   decoration: BoxDecoration(
+            //     border: Border.all(color: Colors.black),
+            //     // borderRadius: BorderRadius.circular(10.0), // Rounds all 4 corners
+            //   ),
+            //   padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 30.0),
+            //   child: const Center(
+            //     child: Text('<Yummy food picture>'), //THIS IS WHERE THE IMAGE WILL GO
+            //   ),
+            // ),
+
+            //BOX FOR CREATOR, SERVINGS, TIME
             Container(
               decoration: BoxDecoration(
                 border: Border.all(color: Colors.black),
                 // borderRadius: BorderRadius.circular(10.0), // Rounds all 4 corners
               ),
-              padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 30.0),
-              child: const Center(
-                child: Text('<Yummy food picture>'), //THIS IS WHERE THE IMAGE WILL GO
+              padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 12.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  
+                //CREATED BY
+                  Expanded(
+                    child: Text('Posted by: $createdBy'),
+                  ),
+
+                const SizedBox(width: 12.0), // Spacing between text
+
+                //SERVINGS
+                  Expanded(
+                    child: Text('Serves: $servings'),
+                  ),
+
+                const SizedBox(width: 12.0), // Spacing between text
+                
+                //TIME
+                  Expanded(
+                    child: Text('Time: $minutes'),
+                  ),
+
+                ],
               ),
             ),
 
+            // 2. MIDDLE ROW (Horizontal)
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // 3A. FIRST INNER COLUMN (Red Outline)
+                Expanded(
+                  child: Column(
+                    children: [
+                      Container(
+                        decoration: BoxDecoration(
+                          border: Border.all(color: Colors.black),
+                          // borderRadius: BorderRadius.circular(10.0), // Rounds all 4 corners
+                        ),
+                        padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 12.0),
+                        child: Center(
+                          child: Column(
+                            children: [
+                              Text('Ingredients:'),
+                              Text(ingredientsAmounts.entries.map((entry) => '${entry.value.name} (${entry.key} ${entry.value.measurement})').join(', ')),
+                            ],
+                          ),
+                        ),
+                      ),
+                      Container(
+                        decoration: BoxDecoration(
+                          border: Border.all(color: Colors.black),
+                          // borderRadius: BorderRadius.circular(10.0), // Rounds all 4 corners
+                        ),
+                        padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 12.0),
+                        child: Center(
+                          child: Column(
+                            children: [
+                              Text('Nutrition Info:'),
+                              Text('insert nutrition info here'),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+            
+                // 3B. SECOND INNER COLUMN (Red Outline)
+                Expanded(
+                  child: Column(
+                    children: [
+                      Container(
+                        decoration: BoxDecoration(
+                          border: Border.all(color: Colors.black),
+                          // borderRadius: BorderRadius.circular(10.0), // Rounds all 4 corners
+                        ),
+                        padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 12.0),
+                        child: Center(
+                          child: Column(
+                            children: [
+                              Text('Directions:'),
+                              Text(directions),
+                            ],
+                          ),
+                        ),
+                      ),
+                      Container(
+                        decoration: BoxDecoration(
+                          border: Border.all(color: Colors.black),
+                          // borderRadius: BorderRadius.circular(10.0), // Rounds all 4 corners
+                        ),
+                        padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 12.0),
+                        child: Center(
+                          child: Column(
+                            children: [
+                              Text('Notes:'),
+                              Text(notes),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+
+            
+            //Tags
             Container(
               decoration: BoxDecoration(
                 border: Border.all(color: Colors.black),
                 // borderRadius: BorderRadius.circular(10.0), // Rounds all 4 corners
               ),
               padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 30.0),
-              
-              child: Row(
-                children: [
-                Expanded(
-                  child: Text('Posted by: $createdBy'),
-                ),
-                const SizedBox(width: 12.0), // Spacing between text
-                Expanded(
-                  child: Text('Serves: $servings'),
-                ),
-                const SizedBox(width: 12.0), // Spacing between text
-                Expanded(
-                  child: Text('Time: $minutes'),
-                ),
-                ],
+              child: Center(
+                child: Text('Taglist: $tags'),
               ),
             ),
           ],
