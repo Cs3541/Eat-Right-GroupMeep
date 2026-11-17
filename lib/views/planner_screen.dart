@@ -225,12 +225,6 @@ class _WeeklyCalendarScreenState extends State<WeeklyCalendarScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final pages = [
-      _buildCalendarPage(context),
-      _buildPlaceholderPage(Icons.check_circle_outline, 'Tasks'),
-      _buildPlaceholderPage(Icons.settings_outlined, 'Settings'),
-    ];
-
     return Scaffold(
       appBar: AppBar(
         title: Text(['Calendar', 'Home', 'Settings'][_navIndex]),
@@ -245,34 +239,10 @@ class _WeeklyCalendarScreenState extends State<WeeklyCalendarScreen> {
               ]
             : null,
       ),
-      body: IndexedStack(index: _navIndex, children: pages),
-      floatingActionButton: _navIndex == 0
-          ? FloatingActionButton(
-              tooltip: 'Add event',
-              onPressed: _addEvent,
-              child: const Icon(Icons.add),
-            )
-          : null,
-      bottomNavigationBar: NavigationBar(
-        selectedIndex: _navIndex,
-        onDestinationSelected: (i) => setState(() => _navIndex = i),
-        destinations: const [
-          NavigationDestination(
-            icon: Icon(Icons.calendar_today_outlined),
-            selectedIcon: Icon(Icons.calendar_today),
-            label: 'Calendar',
-          ),
-          NavigationDestination(
-            icon: Icon(Icons.check_circle_outline),
-            selectedIcon: Icon(Icons.check_circle),
-            label: 'Home',
-          ),
-          NavigationDestination(
-            icon: Icon(Icons.settings_outlined),
-            selectedIcon: Icon(Icons.settings),
-            label: 'Settings',
-          ),
-        ],
+      floatingActionButton: FloatingActionButton(
+        tooltip: 'Add event',
+        onPressed: _addEvent,
+        child: const Icon(Icons.add),
       ),
     );
   }
