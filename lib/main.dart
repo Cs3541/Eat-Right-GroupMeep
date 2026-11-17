@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 //import 'package:groupmeepeatright/models/upload_nutrition.dart';
+import 'package:groupmeepeatright/models/nutritionQuery.dart';
 
 import 'firebase_options.dart';
 import 'views/main_navigation.dart';
@@ -12,10 +13,14 @@ void main() async {
 
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
-  //this code can upload the nutritional dataset, uncomment
+  //this code can upload the nutritional dataset, uncomment if you need to rebuild the data
+
+  // await deleteAllNutritionDocs(onProgress: (n) => debugPrint('deleted $n'));
   // await uploadNutritionCsv(
   //   onProgress: (done, total) => debugPrint('$done / $total'),
   // );
+
+  final ingredientList = await listFoods();
 
   runApp(const EatRightApp());
 }
