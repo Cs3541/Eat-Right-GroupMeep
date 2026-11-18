@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
-import 'firebase_options.dart';
+
 import 'services/notification_service.dart';
 import 'views/main_navigation.dart';
 import 'views/login_screen.dart';
@@ -11,19 +11,11 @@ import 'views/login_screen.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+  await Firebase.initializeApp();
 
   runApp(const EatRightApp());
 
-  WidgetsBinding.instance.addPostFrameCallback((_) async {
-    try {
-      await NotificationService.initialize();
-      await NotificationService.scheduleDailyNotification();
-    } catch (error, stackTrace) {
-      debugPrint('Notification setup failed: $error');
-      debugPrintStack(stackTrace: stackTrace);
-    }
-  });
+  
 }
 
 class EatRightApp extends StatelessWidget {
