@@ -42,7 +42,7 @@ class _MainNavigationScreenState
         final bool isLoggedIn = snapshot.data != null;
 
         final List<Widget> loggedInScreens = [
-         HomeScreen(),
+          HomeScreen(),
           DashboardPage(),
           BrowseScreen(),
           AnalyticsPageScreen(),
@@ -64,6 +64,10 @@ class _MainNavigationScreenState
                       label: 'Home',
                     ),
                     BottomNavigationBarItem(
+                      icon: Icon(Icons.dashboard),
+                      label: 'Dashboard',
+                    ),
+                    BottomNavigationBarItem(
                       icon: Icon(Icons.search),
                       label: 'Browse',
                     ),
@@ -75,10 +79,7 @@ class _MainNavigationScreenState
                       icon: Icon(Icons.person),
                       label: 'Profile',
                     ),
-                    BottomNavigationBarItem(
-                      icon: Icon(Icons.dashboard),
-                      label: 'Dashboard',
-                    ),
+
                   ]
                 : const [
                     BottomNavigationBarItem(
