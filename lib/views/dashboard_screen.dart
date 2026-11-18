@@ -1,89 +1,123 @@
 import 'package:flutter/material.dart';
 
-class LearnDashboard extends StatelessWidget {
-  const LearnDashboard({super.key});
+import '../models/dashboard_model.dart';
+import '../presenters/dashboard_presenter.dart';
+import 'dashboard_view.dart';
+
+class DashboardPage extends StatefulWidget {
+  const DashboardPage({super.key});
+
+  @override
+  State<DashboardPage> createState() =>
+      _DashboardPageState();
+}
+
+class _DashboardPageState extends State<DashboardPage>
+    implements DashboardView {
+
+  late DashboardPresenter presenter;
+
+  bool isLoading = false;
+
+  List<HealthyArticle> articles = [];
+
+  @override
+  void initState() {
+    super.initState();
+
+    presenter = DashboardPresenter(this);
+
+    presenter.loadArticles();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Learn"),
+        title: const Text('Dashboard'),
         backgroundColor: Colors.green,
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
 
-            // Search Bar
-            TextField(
-              decoration: InputDecoration(
-                hintText: "Search...",
-                prefixIcon: const Icon(Icons.search),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(10),
-                ),
+      body: isLoading
+          ? const Center(
+              child: CircularProgressIndicator(),
+            )
+          : RefreshIndicator(
+              onRefresh: () async {
+                await presenter.loadArticles();
+              },
+              child: ListView.builder(
+                padding: const EdgeInsets.all(12),
+                itemCount: articles.length,
+                itemBuilder: (context, index) {
+                  final article = articles[index];
+
+                  return Card(
+                    margin: const EdgeInsets.only(
+                      bottom: 12,
+                    ),
+                    child: ListTile(
+                      leading: const Icon(
+                        Icons.article,
+                        color: Colors.green,
+                      ),
+
+                      title: Text(
+                        article.title,
+                      ),
+
+                      subtitle: Column(
+                        crossAxisAlignment:
+                            CrossAxisAlignment.start,
+                        children: [
+                          Text(article.source),
+                          Text(
+                            article.category,
+                            style: const TextStyle(
+                              color: Colors.green,
+                            ),
+                          ),
+                        ],
+                      ),
+
+                      trailing: const Icon(
+                        Icons.arrow_forward_ios,
+                      ),
+                    ),
+                  );
+                },
               ),
             ),
+    );
+  }
 
-            const SizedBox(height: 20),
+  @override
+  void displayArticles(
+      List<HealthyArticle> loadedArticles) {
+    setState(() {
+      articles = loadedArticles;
+    });
+  }
 
-            const Text(
-              "Articles",
-              style: TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
+  @override
+  void hideLoading() {
+    setState(() {
+      isLoading = false;
+    });
+  }
 
-            Card(
-              child: ListTile(
-                leading: const Icon(Icons.article),
-                title: const Text("Healthy Eating Tips"),
-                trailing: const Icon(Icons.arrow_forward),
-                onTap: () {},
-              ),
-            ),
+  @override
+  void showLoading() {
+    setState(() {
+      isLoading = true;
+    });
+  }
 
-            Card(
-              child: ListTile(
-                leading: const Icon(Icons.article),
-                title: const Text("Benefits of Drinking Water"),
-                trailing: const Icon(Icons.arrow_forward),
-                onTap: () {},
-              ),
-            ),
-
-            const SizedBox(height: 20),
-
-            const Text(
-              "Videos",
-              style: TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-
-            Card(
-              child: ListTile(
-                leading: const Icon(Icons.play_circle_fill),
-                title: const Text("Nutrition Basics"),
-                trailing: const Icon(Icons.arrow_forward),
-                onTap: () {},
-              ),
-            ),
-
-            Card(
-              child: ListTile(
-                leading: const Icon(Icons.play_circle_fill),
-                title: const Text("Meal Prep for Beginners"),
-                trailing: const Icon(Icons.arrow_forward),
-                onTap: () {},
-              ),
-            ),
-          ],
-        ),
+  @override
+  void showError(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message),
       ),
     );
   }

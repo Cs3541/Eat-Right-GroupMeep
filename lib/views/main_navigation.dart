@@ -6,6 +6,7 @@ import 'profile_screen.dart';
 import '../home_screen.dart';
 import 'browse_screen.dart';
 import 'analytics_page_screen.dart';
+import 'dashboard_screen.dart';
 
 
 class MainNavigationScreen extends StatefulWidget {
@@ -40,15 +41,13 @@ class _MainNavigationScreenState
 
         final bool isLoggedIn = snapshot.data != null;
 
-   
         final List<Widget> loggedInScreens = [
-          HomeScreen(),
+         HomeScreen(),
+          DashboardPage(),
           BrowseScreen(),
           AnalyticsPageScreen(),
           ProfileScreen(),
-        ];
-
-   
+];
         final List<Widget> loggedOutScreens = [
           LoginScreen(),
           SignupScreen(),
@@ -75,6 +74,10 @@ class _MainNavigationScreenState
                     BottomNavigationBarItem(
                       icon: Icon(Icons.person),
                       label: 'Profile',
+                    ),
+                    BottomNavigationBarItem(
+                      icon: Icon(Icons.dashboard),
+                      label: 'Dashboard',
                     ),
                   ]
                 : const [
