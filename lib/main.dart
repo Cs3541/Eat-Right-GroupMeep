@@ -4,7 +4,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 //import 'package:groupmeepeatright/models/upload_nutrition.dart';
 import 'package:groupmeepeatright/models/nutritionQuery.dart';
 
-import 'firebase_options.dart';
+//import 'firebase_options.dart';
+import 'services/notification_service.dart';
 import 'views/main_navigation.dart';
 import 'views/login_screen.dart';
 
@@ -24,6 +25,9 @@ void main() async {
 
   // ingredientList = await listFoods();
   // debugPrint('Loaded ${ingredientList.length} ingredients');
+
+  await NotificationService.initialize();
+  await NotificationService.scheduleDailyNotification();
 
   runApp(const EatRightApp());
 }
