@@ -14,7 +14,7 @@ List<String> ingredientList = [];
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+  await Firebase.initializeApp();
 
   //this code can upload the nutritional dataset, uncomment if you need to rebuild the data
 
