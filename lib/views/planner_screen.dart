@@ -1,8 +1,5 @@
 import 'package:flutter/material.dart';
-
-import 'main_navigation.dart';
-import '../home_screen.dart';
-import '../main.dart';
+import '../models/nutrition_data.dart';
 
 void main() => runApp(const CalendarApp());
 
@@ -30,7 +27,11 @@ class CalendarEvent {
 }
 
 class WeeklyCalendarScreen extends StatefulWidget {
-  const WeeklyCalendarScreen({super.key});
+  const WeeklyCalendarScreen({super.key, this.nutritionData});
+
+  /// Optional pre-loaded data. If null, the screen loads it from the asset
+  /// the first time the add/edit dialog is opened.
+  final NutritionData? nutritionData;
 
   @override
   State<WeeklyCalendarScreen> createState() => _WeeklyCalendarScreenState();
@@ -60,6 +61,20 @@ class _WeeklyCalendarScreenState extends State<WeeklyCalendarScreen> {
     'November',
     'December',
   ];
+
+  static const _nutritionAsset = 'assets/files/nutrition.csv';
+
+  /// Max rows shown in the selector; typing narrows the list further.
+  static const _maxResults = 50;
+
+  /// Loaded once and shared by every instance of this screen.
+  static Future<NutritionData>? _nutritionFuture;
+
+  Future<NutritionData> _loadNutrition() {
+    final provided = widget.nutritionData;
+    if (provided != null) return Future.value(provided);
+    return _nutritionFuture ??= NutritionData.fromAsset(_nutritionAsset);
+  }
 
   @override
   void initState() {
@@ -158,92 +173,172 @@ class _WeeklyCalendarScreenState extends State<WeeklyCalendarScreen> {
   }
 
   /// Shared add/edit dialog. Returns the chosen title and time, or null
-  /// if cancelled. The title comes from [ingredientList] via a DropdownMenu.
+  /// if cancelled. The title is picked from a list filtered by
+  /// [NutritionData.searchNames] as the user types.
   Future<({String title, TimeOfDay? time})?> _showEventDialog({
     CalendarEvent? existing,
-  }) {
+  }) async {
+    final NutritionData data;
+    try {
+      data = await _loadNutrition();
+    } catch (e) {
+      _nutritionFuture = null; // allow a retry next time
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Could not load foods: $e')),
+        );
+      }
+      return null;
+    }
+    if (!mounted) return null;
+
     String? selected = existing?.title;
     TimeOfDay? time = existing?.time;
     final isEditing = existing != null;
 
-    // If the event's title is no longer in the list, still show it as an option.
-    final options = <String>[
-      ...ingredientList,
-      if (selected != null && !ingredientList.contains(selected)) selected,
-    ];
+    // Start the search with the current title so it's visible when editing.
+    var query = existing?.title ?? '';
+
+    // If the event's title is no longer in the data, still offer it.
+    final missingTitle =
+        (selected != null && !data.getNames().contains(selected))
+            ? selected
+            : null;
 
     return showDialog<({String title, TimeOfDay? time})>(
       context: context,
       builder: (ctx) => StatefulBuilder(
-        builder: (ctx, setDialogState) => AlertDialog(
-          title: Text(
-            '${isEditing ? 'Edit' : 'New'} event · '
-            '${_dayLabels[_selectedDay.weekday % 7]} '
-            '${_selectedDay.month}/${_selectedDay.day}',
-          ),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              if (options.isEmpty)
-                const Padding(
-                  padding: EdgeInsets.only(bottom: 8),
-                  child: Text('No ingredients available. Add some first.'),
-                )
-              else
-                DropdownMenu<String>(
-                  width: 280,
-                  maxLines: 1,
-                  initialSelection: selected,
-                  label: const Text('Event'),
-                  hintText: 'Choose an ingredient',
-                  enableFilter: true,
-                  requestFocusOnTap: true,
-                  menuHeight: 10,
-                  dropdownMenuEntries: options
-                      .map((i) => DropdownMenuEntry<String>(value: i, label: i))
-                      .toList(),
-                  onSelected: (value) => setDialogState(() => selected = value),
-                ),
-              const SizedBox(height: 12),
-              Row(
+        builder: (ctx, setDialogState) {
+          final theme = Theme.of(ctx);
+          final matches = data.searchNames(query);
+          final shown = <String>[
+            if (missingTitle != null) missingTitle,
+            ...matches.take(_maxResults),
+          ];
+
+          return AlertDialog(
+            title: Text(
+              '${isEditing ? 'Edit' : 'New'} event · '
+              '${_dayLabels[_selectedDay.weekday % 7]} '
+              '${_selectedDay.month}/${_selectedDay.day}',
+            ),
+            content: SizedBox(
+              width: 320,
+              child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  OutlinedButton.icon(
-                    icon: const Icon(Icons.access_time),
-                    label: Text(
-                      time == null ? 'Add time (optional)' : time!.format(ctx),
+                  TextFormField(
+                    initialValue: query,
+                    autofocus: !isEditing,
+                    decoration: const InputDecoration(
+                      labelText: 'Search foods',
+                      prefixIcon: Icon(Icons.search),
+                      border: OutlineInputBorder(),
+                      isDense: true,
                     ),
-                    onPressed: () async {
-                      final t = await showTimePicker(
-                        context: ctx,
-                        initialTime: time ?? TimeOfDay.now(),
-                      );
-                      if (t != null) setDialogState(() => time = t);
-                    },
+                    onChanged: (value) =>
+                        setDialogState(() => query = value),
                   ),
-                  if (time != null)
-                    IconButton(
-                      tooltip: 'Clear time',
-                      icon: const Icon(Icons.close),
-                      onPressed: () => setDialogState(() => time = null),
+                  const SizedBox(height: 8),
+                  SizedBox(
+                    height: 240,
+                    child: shown.isEmpty
+                        ? Center(
+                            child: Text(
+                              'No matches for "$query".',
+                              style: theme.textTheme.bodyMedium?.copyWith(
+                                color: theme.colorScheme.outline,
+                              ),
+                            ),
+                          )
+                        : ListView.builder(
+                            itemCount: shown.length,
+                            itemBuilder: (_, i) {
+                              final name = shown[i];
+                              final isSelected = name == selected;
+                              return ListTile(
+                                dense: true,
+                                title: Text(
+                                  name,
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                                selected: isSelected,
+                                selectedTileColor:
+                                    theme.colorScheme.primaryContainer,
+                                trailing: isSelected
+                                    ? const Icon(Icons.check)
+                                    : null,
+                                onTap: () =>
+                                    setDialogState(() => selected = name),
+                              );
+                            },
+                          ),
+                  ),
+                  if (matches.length > _maxResults)
+                    Padding(
+                      padding: const EdgeInsets.only(top: 4),
+                      child: Text(
+                        'Showing $_maxResults of ${matches.length}. '
+                        'Keep typing to narrow it down.',
+                        style: theme.textTheme.bodySmall?.copyWith(
+                          color: theme.colorScheme.outline,
+                        ),
+                      ),
                     ),
+                  if (selected != null)
+                    Padding(
+                      padding: const EdgeInsets.only(top: 8),
+                      child: Align(
+                        alignment: Alignment.centerLeft,
+                        child: Text(
+                          'Selected: $selected',
+                          style: theme.textTheme.labelLarge,
+                        ),
+                      ),
+                    ),
+                  const SizedBox(height: 12),
+                  Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      OutlinedButton.icon(
+                        icon: const Icon(Icons.access_time),
+                        label: Text(
+                          time == null ? 'Add time (optional)' : time!.format(ctx),
+                        ),
+                        onPressed: () async {
+                          final t = await showTimePicker(
+                            context: ctx,
+                            initialTime: time ?? TimeOfDay.now(),
+                          );
+                          if (t != null) setDialogState(() => time = t);
+                        },
+                      ),
+                      if (time != null)
+                        IconButton(
+                          tooltip: 'Clear time',
+                          icon: const Icon(Icons.close),
+                          onPressed: () => setDialogState(() => time = null),
+                        ),
+                    ],
+                  ),
                 ],
               ),
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(ctx),
+                child: const Text('Cancel'),
+              ),
+              FilledButton(
+                onPressed: selected == null
+                    ? null
+                    : () => Navigator.pop(ctx, (title: selected!, time: time)),
+                child: Text(isEditing ? 'Save' : 'Add'),
+              ),
             ],
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(ctx),
-              child: const Text('Cancel'),
-            ),
-            FilledButton(
-              onPressed: selected == null
-                  ? null
-                  : () => Navigator.pop(ctx, (title: selected!, time: time)),
-              child: Text(isEditing ? 'Save' : 'Add'),
-            ),
-          ],
-        ),
+          );
+        },
       ),
     );
   }
