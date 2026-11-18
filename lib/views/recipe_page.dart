@@ -68,7 +68,6 @@ class _RecipeScreenState extends State<RecipePage> {
             Container(
               decoration: BoxDecoration(
                 border: Border.all(color: Colors.black),
-                // borderRadius: BorderRadius.circular(10.0), // Rounds all 4 corners
               ),
               padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 30.0),
               child: const Center(
@@ -80,7 +79,6 @@ class _RecipeScreenState extends State<RecipePage> {
             Container(
               decoration: BoxDecoration(
                 border: Border.all(color: Colors.black),
-                // borderRadius: BorderRadius.circular(10.0), // Rounds all 4 corners
               ),
               padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 12.0),
               child: Row(
@@ -121,7 +119,6 @@ class _RecipeScreenState extends State<RecipePage> {
                       Container(
                         decoration: BoxDecoration(
                           border: Border.all(color: Colors.black),
-                          // borderRadius: BorderRadius.circular(10.0), // Rounds all 4 corners
                         ),
                         padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 12.0),
                         child: Center(
@@ -136,7 +133,6 @@ class _RecipeScreenState extends State<RecipePage> {
                       Container(
                         decoration: BoxDecoration(
                           border: Border.all(color: Colors.black),
-                          // borderRadius: BorderRadius.circular(10.0), // Rounds all 4 corners
                         ),
                         padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 12.0),
                         child: Center(
@@ -159,7 +155,6 @@ class _RecipeScreenState extends State<RecipePage> {
                       Container(
                         decoration: BoxDecoration(
                           border: Border.all(color: Colors.black),
-                          // borderRadius: BorderRadius.circular(10.0), // Rounds all 4 corners
                         ),
                         padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 12.0),
                         child: Center(
@@ -174,7 +169,6 @@ class _RecipeScreenState extends State<RecipePage> {
                       Container(
                         decoration: BoxDecoration(
                           border: Border.all(color: Colors.black),
-                          // borderRadius: BorderRadius.circular(10.0), // Rounds all 4 corners
                         ),
                         padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 12.0),
                         child: Center(
@@ -197,7 +191,6 @@ class _RecipeScreenState extends State<RecipePage> {
             Container(
               decoration: BoxDecoration(
                 border: Border.all(color: Colors.black),
-                // borderRadius: BorderRadius.circular(10.0), // Rounds all 4 corners
               ),
               padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 30.0),
               child: Center(
