@@ -99,7 +99,7 @@ class _BrowseScreenState extends State<BrowseScreen> {
                     },
                   ),
                 ),
-                const SizedBox(width: 12.0), // Spacing between dropdowns
+                const SizedBox(width: 12.0), // box for spacing
 
                 // Second Dropdown
                 Expanded(
@@ -159,7 +159,7 @@ class _BrowseScreenState extends State<BrowseScreen> {
                     },
                   ),
                 ),
-                const SizedBox(width: 6.0), // Spacing between dropdowns
+                const SizedBox(width: 6.0), // box for spacing
 
                 // Filter by Ingredients
                 Expanded(
@@ -185,7 +185,7 @@ class _BrowseScreenState extends State<BrowseScreen> {
                     },
                   ),
                 ),
-                const SizedBox(width: 6.0), // Spacing between dropdowns
+                const SizedBox(width: 6.0), // box for spacing
               
                 // Filter by Ethnicity
                 Expanded(
@@ -211,7 +211,7 @@ class _BrowseScreenState extends State<BrowseScreen> {
                     },
                   ),
                 ),
-                const SizedBox(width: 6.0), // Spacing between dropdowns
+                const SizedBox(width: 6.0), // box for spacing
 
                 // Filter by Other
                 Expanded(
@@ -237,7 +237,7 @@ class _BrowseScreenState extends State<BrowseScreen> {
                     },
                   ),
                 ),
-                const SizedBox(width: 6.0), // Spacing between dropdowns
+                const SizedBox(width: 6.0), // box for spacing
 
 
               ],
@@ -305,17 +305,6 @@ class _BrowseScreenState extends State<BrowseScreen> {
                 ),
               ),
             ),
-
-            // Container(
-            //   decoration: BoxDecoration(
-            //     border: Border.all(color: Colors.black),
-            //     borderRadius: BorderRadius.circular(10.0), // Rounds all 4 corners
-            //   ),
-            //   padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 30.0),
-            //   child: const Center(
-            //     child: Text('Recipe Results'),
-            //   ),
-            // ),
 
             // Expanded(
             //   child: Center(

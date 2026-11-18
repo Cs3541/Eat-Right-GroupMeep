@@ -1,16 +1,169 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_database/firebase_database.dart';
+
 import '../presenters/auth_presenter.dart';
 import 'login_screen.dart';
 import 'nutrition_goals_screen.dart';
 
-class ProfileScreen extends StatelessWidget {
+class ProfileScreen extends StatefulWidget {
+  const ProfileScreen({super.key});
+
+  @override
+  State<ProfileScreen> createState() => _ProfileScreenState();
+}
+
+class _ProfileScreenState extends State<ProfileScreen> {
   final AuthPresenter _presenter = AuthPresenter();
-
-
-  ProfileScreen({super.key});
 
   static const Color primaryPurple = Color(0xFF7956A5);
   static const Color lightPurple = Color(0xFFF2EDF8);
+
+//feel free to add more profile pictures here
+  final List<String> _avatarPaths = [
+  'assets/avatars/apple.png',
+  'assets/avatars/blueberry.png',
+  'assets/avatars/strawberry.png',
+  'assets/avatars/burger.png',
+  'assets/avatars/bowl.png',
+];
+
+  String? _selectedAvatar;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadProfilePicture();
+  }
+
+
+  Future<void> _loadProfilePicture() async {
+    final user = FirebaseAuth.instance.currentUser;
+
+    if (user == null) return;
+
+    try {
+      final snapshot = await FirebaseDatabase.instance
+          .ref('profile_pictures/${user.uid}')
+          .get();
+
+      if (snapshot.exists && mounted) {
+        setState(() {
+          _selectedAvatar = snapshot.value as String?;
+        });
+      }
+    } catch (e) {
+      debugPrint('Error loading profile picture: $e');
+    }
+  }
+
+
+  Future<void> _selectAvatar(
+    BuildContext dialogContext,
+    String avatarPath,
+  ) async {
+    final user = FirebaseAuth.instance.currentUser;
+
+    if (user == null) return;
+
+    try {
+      await FirebaseDatabase.instance
+          .ref('profile_pictures/${user.uid}')
+          .set(avatarPath);
+
+      if (!mounted) return;
+
+      setState(() {
+        _selectedAvatar = avatarPath;
+      });
+
+      Navigator.pop(dialogContext);
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Profile picture updated!'),
+        ),
+      );
+    } catch (e) {
+      debugPrint('Error saving profile picture: $e');
+
+      if (!mounted) return;
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Could not update profile picture.'),
+        ),
+      );
+    }
+  }
+
+//profile pic popup
+  void _showAvatarDialog() {
+    showDialog(
+      context: context,
+      builder: (dialogContext) {
+        return AlertDialog(
+          title: const Text(
+            'Select New Profile Picture',
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+              color: primaryPurple,
+            ),
+          ),
+          content: SizedBox(
+            width: double.maxFinite,
+            child: GridView.builder(
+              shrinkWrap: true,
+              itemCount: _avatarPaths.length,
+              gridDelegate:
+                  const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 3,
+                crossAxisSpacing: 15,
+                mainAxisSpacing: 15,
+              ),
+              itemBuilder: (context, index) {
+                final avatar = _avatarPaths[index];
+                final isSelected = avatar == _selectedAvatar;
+
+                return InkWell(
+                  onTap: () => _selectAvatar(
+                    dialogContext,
+                    avatar,
+                  ),
+                  borderRadius: BorderRadius.circular(50),
+                  child: Container(
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      border: Border.all(
+                        color: isSelected
+                            ? primaryPurple
+                            : Colors.transparent,
+                        width: 3,
+                      ),
+                    ),
+                    padding: const EdgeInsets.all(3),
+                    child: CircleAvatar(
+                      backgroundColor: lightPurple,
+                      backgroundImage: AssetImage(avatar),
+                    ),
+                  ),
+                );
+              },
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(dialogContext),
+              child: const Text(
+                'Cancel',
+                style: TextStyle(color: primaryPurple),
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
 
   void _logout(BuildContext context) async {
     await _presenter.logout();
@@ -65,21 +218,40 @@ class ProfileScreen extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
 
-            // Profile Header
+          
             Center(
               child: Column(
                 children: [
-                  const CircleAvatar(
+                  CircleAvatar(
                     radius: 48,
                     backgroundColor: lightPurple,
-                    child: Icon(
-                      Icons.person,
-                      size: 55,
-                      color: primaryPurple,
+                    backgroundImage: _selectedAvatar != null
+                        ? AssetImage(_selectedAvatar!)
+                        : null,
+                    child: _selectedAvatar == null
+                        ? const Icon(
+                            Icons.person,
+                            size: 55,
+                            color: primaryPurple,
+                          )
+                        : null,
+                  ),
+
+                  const SizedBox(height: 8),
+
+                  TextButton.icon(
+                    onPressed: _showAvatarDialog,
+                    icon: const Icon(
+                      Icons.edit,
+                      size: 16,
+                    ),
+                    label: const Text('Change Profile Picture'),
+                    style: TextButton.styleFrom(
+                      foregroundColor: primaryPurple,
                     ),
                   ),
 
-                  const SizedBox(height: 15),
+                  const SizedBox(height: 5),
 
                   const Text(
                     'Welcome!',
@@ -104,7 +276,7 @@ class ProfileScreen extends StatelessWidget {
 
             const SizedBox(height: 32),
 
-            // Account Information
+        
             _buildSectionTitle(
               'Account Information',
               Icons.person_outline,
@@ -163,6 +335,8 @@ class ProfileScreen extends StatelessWidget {
             ),
 
             const SizedBox(height: 28),
+
+            // Nutrition Goals
             _buildSectionTitle(
               'Nutrition Goals',
               Icons.track_changes,
@@ -213,7 +387,8 @@ class ProfileScreen extends StatelessWidget {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (_) => const NutritionGoalsScreen(),
+                              builder: (_) =>
+                                  const NutritionGoalsScreen(),
                             ),
                           );
                         },
@@ -243,7 +418,7 @@ class ProfileScreen extends StatelessWidget {
 
             const SizedBox(height: 30),
 
-            // Logout
+            
             SizedBox(
               width: double.infinity,
               height: 50,
