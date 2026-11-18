@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+
 import 'login_screen.dart';
 import 'signup_screen.dart';
 import 'profile_screen.dart';
 import '../home_screen.dart';
 import 'browse_screen.dart';
 import 'analytics_page_screen.dart';
+import 'planner_screen.dart';
 import 'dashboard_screen.dart';
 
 
@@ -13,12 +15,10 @@ class MainNavigationScreen extends StatefulWidget {
   const MainNavigationScreen({super.key});
 
   @override
-  State<MainNavigationScreen> createState() =>
-      _MainNavigationScreenState();
+  State<MainNavigationScreen> createState() => _MainNavigationScreenState();
 }
 
-class _MainNavigationScreenState
-    extends State<MainNavigationScreen> {
+class _MainNavigationScreenState extends State<MainNavigationScreen> {
   int _selectedIndex = 0;
 
   void _onItemTapped(int index) {
@@ -32,7 +32,6 @@ class _MainNavigationScreenState
     return StreamBuilder<User?>(
       stream: FirebaseAuth.instance.authStateChanges(),
       builder: (context, snapshot) {
-
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const Scaffold(
             body: Center(child: CircularProgressIndicator()),
@@ -45,6 +44,7 @@ class _MainNavigationScreenState
           HomeScreen(),
           DashboardPage(),
           BrowseScreen(),
+          CalendarApp(),
           AnalyticsPageScreen(),
           ProfileScreen(),
 ];
@@ -53,8 +53,9 @@ class _MainNavigationScreenState
           SignupScreen(),
         ];
 
-        final List<Widget> screens =
-            isLoggedIn ? loggedInScreens : loggedOutScreens;
+        final List<Widget> screens = isLoggedIn
+            ? loggedInScreens
+            : loggedOutScreens;
 
         final List<BottomNavigationBarItem> navItems =
             isLoggedIn
@@ -70,6 +71,10 @@ class _MainNavigationScreenState
                     BottomNavigationBarItem(
                       icon: Icon(Icons.search),
                       label: 'Browse',
+                    ),
+                    BottomNavigationBarItem(
+                      icon: Icon(Icons.calendar_today),
+                      label: 'Planner',
                     ),
                     BottomNavigationBarItem(
                       icon: Icon(Icons.analytics),
@@ -92,8 +97,7 @@ class _MainNavigationScreenState
                     ),
                   ];
 
-        final int safeIndex =
-            _selectedIndex.clamp(0, screens.length - 1);
+        final int safeIndex = _selectedIndex.clamp(0, screens.length - 1);
 
         return Scaffold(
           body: screens[safeIndex],
