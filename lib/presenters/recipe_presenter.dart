@@ -8,7 +8,7 @@
 //   RecipePresenter(this._view);
 
 //   // Example method triggered by user interaction in the UI
-//   void loadRecipe(String recipeId) {
+//   Future<void> loadRecipe(String recipeId) async {
 //     _view.showLoading();
 
 //     try {

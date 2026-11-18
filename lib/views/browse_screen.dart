@@ -239,50 +239,50 @@
 //                 const SizedBox(width: 6.0), // Spacing between dropdowns
 
 
-//               ],
-//             ),
-//             const SizedBox(height: 24.0),
-//             // Display area showing current selections
+              ],
+            ),
+            const SizedBox(height: 24.0),
             
-//             // Button to navigate to the Recipe Page
-//             ElevatedButton(
-//               onPressed: () {
-//                 // Navigate to the second page
-//                 Navigator.push(
-//                   context,
-//                   MaterialPageRoute(builder: (context) => RecipePage()),
-//                 );
-//               },
-//               child: const Text('Go to Recipe Page'),
-//             ),
-//             // 1. Recipe Results
-//             Container(
-//               decoration: BoxDecoration(
-//                 border: Border.all(color: Colors.black),
-//                 borderRadius: BorderRadius.circular(10.0), // Rounds all 4 corners
-//               ),
-//               padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 30.0),
-//               child: const Center(
-//                 child: Text('Recipe Results'),
-//               ),
-//             ),
-//             Expanded(
-//               child: Center(
-//                 child: Text(
-//                   'Search: "${_searchController.text}"\n'
-//                   'Search By: ${_selectedSearch ?? "None"}\n'
-//                   'Sort By: ${_selectedSort ?? "None"}\n'
-//                   'Filter Meal Type: ${_filterMealType ?? "None"}\n'
-//                   'Filter Ethnicity: ${_filterEthnicity ?? "None"}\n'
-//                   'Filter Other: ${_filterOther ?? "None"}',
-//                   textAlign: TextAlign.center,
-//                   style: const TextStyle(fontSize: 16.0, color: Colors.grey),
-//                 ),
-//               ),
-//             ),
-//           ],
-//         ),
-//       ),
-//     );
-//   }
-// }
+            // Button to navigate to the Recipe Page
+            ElevatedButton(
+              onPressed: () {
+                // Navigate to the second page
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => RecipePage()),
+                );
+              },
+              child: const Text('Go to Recipe Page'),
+            ),
+            
+            // Display area showing current selections
+            Container(
+              decoration: BoxDecoration(
+                border: Border.all(color: Colors.black),
+                borderRadius: BorderRadius.circular(10.0), // Rounds all 4 corners
+              ),
+              padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 30.0),
+              child: const Center(
+                child: Text('Recipe Results'),
+              ),
+            ),
+            Expanded(
+              child: Center(
+                child: Text(
+                  'Search: "${_searchController.text}"\n'
+                  'Search By: ${_selectedSearch ?? "None"}\n'
+                  'Sort By: ${_selectedSort ?? "None"}\n'
+                  'Filter Meal Type: ${_filterMealType ?? "None"}\n'
+                  'Filter Ethnicity: ${_filterEthnicity ?? "None"}\n'
+                  'Filter Other: ${_filterOther ?? "None"}',
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(fontSize: 16.0, color: Colors.grey),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
