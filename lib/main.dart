@@ -10,13 +10,10 @@ import 'views/login_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-
-  await Firebase.initializeApp();
-
-  runApp(const EatRightApp());
+  await Firebase.initializeApp(); 
   await NotificationService.initialize();
   await NotificationService.scheduleDailyNotification();
-  
+  runApp(const EatRightApp());
 }
 
 class EatRightApp extends StatelessWidget {
