@@ -14,7 +14,8 @@ void main() async {
   await Firebase.initializeApp();
 
   runApp(const EatRightApp());
-
+  await NotificationService.initialize();
+  await NotificationService.scheduleDailyNotification();
   
 }
 
