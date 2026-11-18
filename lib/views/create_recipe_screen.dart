@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-// Define a custom Form widget.
 class CreateRecipeScreen extends StatefulWidget {
   const CreateRecipeScreen({super.key});
 
@@ -8,27 +7,147 @@ class CreateRecipeScreen extends StatefulWidget {
   State<CreateRecipeScreen> createState() => _CreateRecipeScreenState();
 }
 
-// Define a corresponding State class.
-// This class holds the data related to the Form.
 class _CreateRecipeScreenState extends State<CreateRecipeScreen> {
-  // Create a text controller and use it to retrieve the current value
-  // of the TextField.
-  final myController = TextEditingController();
+
+  final TextEditingController _titleController = TextEditingController();
+  final TextEditingController _imageController = TextEditingController();
+  final TextEditingController _ingredientsController = TextEditingController();
+  final TextEditingController _directionsController = TextEditingController();
+  final TextEditingController _notesController = TextEditingController();
+  final TextEditingController _tagsController = TextEditingController();
 
   @override
   void dispose() {
-    // Clean up the controller when the widget is disposed.
-    myController.dispose();
+    _titleController.dispose();
+    _imageController.dispose();
+    _ingredientsController.dispose();
+    _directionsController.dispose();
+    _notesController.dispose();
+    _tagsController.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Retrieve Text Input')),
-      body: Padding(
-        padding: const EdgeInsets.all(16),
-        child: TextField(controller: myController),
+      appBar: AppBar(
+        title: const Text('Create Recipe'),
+        leading: IconButton(
+          icon: const Icon(Icons.close),
+          tooltip: 'Close',
+          onPressed: () {
+            // Custom close logic or standard pop
+            Navigator.of(context).pop();
+          },
+        ),
+      ),
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            // TITLE INPUT FIELD
+            TextField(
+              controller: _titleController,
+              decoration: InputDecoration(
+                hintText: 'Title...',
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(10.0),
+                ),
+                contentPadding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 14.0),
+              ),
+              onChanged: (value) {
+                // Handle title changes here
+              },
+            ),
+            const SizedBox(height: 16.0),
+
+            // IMAGE INPUT
+            TextField(
+              controller: _imageController,
+              decoration: InputDecoration(
+                hintText: 'Image URL...',
+                prefixIcon: const Icon(Icons.image),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(10.0),
+                ),
+                contentPadding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 14.0),
+              ),
+              onChanged: (value) {
+                // Handle image URL changes here
+              },
+            ),
+            const SizedBox(height: 20),
+
+            // INGREDIENTS INPUT
+            TextField(
+              controller: _ingredientsController,
+              decoration: InputDecoration(
+                hintText: 'Ingredients...',
+                prefixIcon: const Icon(Icons.list),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(10.0),
+                ),
+                contentPadding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 14.0),
+              ),
+              onChanged: (value) {
+                // Handle ingredients changes here
+              },
+            ),
+            const SizedBox(height: 20),
+
+            // DIRECTIONS INPUT
+            TextField(
+              controller: _directionsController,
+              decoration: InputDecoration(
+                hintText: 'Directions...',
+                prefixIcon: const Icon(Icons.list),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(10.0),
+                ),
+                contentPadding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 14.0),
+              ),
+              onChanged: (value) {
+                // Handle directions changes here
+              },
+            ),
+            const SizedBox(height: 20),
+
+            // NOTES INPUT
+            TextField(
+              controller: _notesController,
+              decoration: InputDecoration(
+                hintText: 'Notes...',
+                prefixIcon: const Icon(Icons.list),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(10.0),
+                ),
+                contentPadding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 14.0),
+              ),
+              onChanged: (value) {
+                // Handle notes changes here
+              },
+            ),
+            const SizedBox(height: 20),
+
+            // TAGS INPUT
+            TextField(
+              controller: _tagsController,
+              decoration: InputDecoration(
+                hintText: 'Tags...',
+                prefixIcon: const Icon(Icons.tag),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(10.0),
+                ),
+                contentPadding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 14.0),
+              ),
+              onChanged: (value) {
+                // Handle tags changes here
+              },
+            ),
+          ],
+        ),
       ),
       floatingActionButton: FloatingActionButton(
         // When the user presses the button, show an alert dialog containing
@@ -40,7 +159,14 @@ class _CreateRecipeScreenState extends State<CreateRecipeScreen> {
               return AlertDialog(
                 // Retrieve the text that the user has entered by using the
                 // TextEditingController.
-                content: Text(myController.text),
+                content: Text(
+                  'Title: "${_titleController.text}"\n'
+                  'Image: "${_imageController.text}"\n'
+                  'Ingredients: "${_ingredientsController.text}"\n'
+                  'Directions: "${_directionsController.text}"\n'
+                  'Notes: "${_notesController.text}"\n'
+                  'Tags: "${_tagsController.text}"\n'
+                  ),
               );
             },
           );
@@ -51,99 +177,3 @@ class _CreateRecipeScreenState extends State<CreateRecipeScreen> {
     );
   }
 }
-// class ExampleIngredientModel {
-//   final String name;
-//   final String measurement;
-
-//   ExampleIngredientModel({required this.name, required this.measurement});
-// }
-
-// class CreateRecipeScreen extends StatefulWidget {
-//   const CreateRecipeScreen({super.key});
-
-//   @override
-//   State<CreateRecipeScreen> createState() => _CreateRecipeScreenState();
-// }
-
-// class _CreateRecipeScreenState extends State<CreateRecipeScreen> {
-
-
-//   String title = 'Recipe Title';
-//   final String recipeId = 'recipeID';
-//   final String createdBy = 'John Chef';
-//   double rating = 4.8;
-//   String imageTEMP = 'img.jpg';
-//   List<String> tags = ['tag1', 'tag2', 'tag3'];
-//   int servings = 2;
-//   double minutes = 30.0;
-//   static final Map<double, ExampleIngredientModel> ingredientsAmounts = {
-//     1.0: ExampleIngredientModel(name: 'butter', measurement: 'cup'),
-//     2.0: ExampleIngredientModel(name: 'flour', measurement: 'lb'),
-//     3.0: ExampleIngredientModel(name: 'sugar', measurement: 'g'),
-//   };
-//   String directions = 'Insert directions here';
-//   String notes = 'Insert notes here';
-
-
-//   final TextEditingController _titleController = TextEditingController();
-  
-//   @override
-//   void dispose() {
-//     _titleController.dispose();
-//     super.dispose();
-//   }
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       appBar: AppBar(
-//         title: const Text('Create Recipe'),
-//         leading: IconButton(
-//           icon: const Icon(Icons.close),
-//           tooltip: 'Close',
-//           onPressed: () {
-//             // Custom close logic or standard pop
-//             Navigator.of(context).pop();
-//           },
-//         ),
-//       ),
-//       body: SingleChildScrollView(
-//         padding: const EdgeInsets.all(16.0),
-//         child: Column(
-          
-//           crossAxisAlignment: CrossAxisAlignment.stretch,
-//           children: [
-//             // 1. Search Bar at the top
-//             TextField(
-//               controller: _titleController,
-//               decoration: InputDecoration(
-//                 hintText: 'Title...',
-//                 prefixIcon: const Icon(Icons.search),
-//                 border: OutlineInputBorder(
-//                   borderRadius: BorderRadius.circular(10.0),
-//                 ),
-//                 contentPadding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 14.0),
-//               ),
-//               onChanged: (value) {
-//                 // Handle title changes here
-//               },
-//             ),
-//             const SizedBox(height: 16.0),
-
-//             const SizedBox(height: 20),
-//             Container(height: 300, color: Colors.green),
-//             const SizedBox(height: 20),
-//             Container(height: 300, color: Colors.orange),
-//             Center(
-//               child: Text(
-//                 'Title: "${_titleController.text}"',
-//                 textAlign: TextAlign.center,
-//                 style: const TextStyle(fontSize: 16.0, color: Colors.grey),
-//               ),
-//             ),
-//           ],
-//         ),
-//       ),
-//     );
-//   }
-// }
