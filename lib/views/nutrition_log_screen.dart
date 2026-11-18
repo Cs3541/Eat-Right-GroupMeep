@@ -8,7 +8,9 @@ class NutritionLogScreen extends StatefulWidget {
   State<NutritionLogScreen> createState() => _NutritionLogScreenState();
 }
 
-class _NutritionLogScreenState extends State<NutritionLogScreen> {
+class _NutritionLogScreenState extends
+
+ State<NutritionLogScreen> {
   final NutritionLogPresenter _presenter = NutritionLogPresenter();
 
   bool _isLoading = true;
@@ -32,53 +34,74 @@ class _NutritionLogScreenState extends State<NutritionLogScreen> {
 
   Future<void> _loadNutritionLogs() async {
     await _presenter.loadNutritionLogs();
-    setState(() => _isLoading = false);
+    if (mounted) {
+      setState(() => _isLoading = false);
+    }
   }
 
   void _showAddNutritionLogDialog() {
     String newDate = '';
     String newLog ='';
-    showAdaptiveDialog(
+    String newIron ='';
+    String newCalcium ='';
+    String newFats ='';
+    String newSugars ='';
+    String newCalories ='';
+
+    showDialog(
       context: context,
-      builder: (BuildContext dialogContext) {
-        return StatefulBuilder(
-          builder: (context, setDialogState) {
-            return AlertDialog(
-              title: const Text('Add log'),
-              content: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  TextField(
-                    decoration: const InputDecoration(
-                      hintText: 'enter date',
-                    ),
-                    onChanged: (value) {
-                      newDate = value;
-                    },
-                  ),
-                  const SizedBox(height: 12),
-
-
-                ],
+      builder: (context) {
+        return AlertDialog(
+          title: const Text('Add Nutrition Log'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TextField(
+                decoration: const InputDecoration(labelText: 'Date'),
+                onChanged: (value) => newDate = value,
               ),
-              actions: [
-                TextButton(
-                  onPressed: () => Navigator.pop(context),
-                  child: const Text('Cancel'),
-                ),
-                TextButton(
-                  onPressed: () async {
-                    if (newDate.trim().isNotEmpty != null) {
-                      await _presenter.addNutritionLog(newDate.trim(), newLog.trim());
-                      setState(() {});
-                      Navigator.pop(dialogContext);
-                    };
-                  },
-                  child: const Text('Add'),
-                ),
-              ],
-            );
-          },
+              TextField(
+                decoration: const InputDecoration(labelText: "Nutrition Logs"),
+                onChanged: (value) => newLog = value,
+              ),
+              TextField(
+                decoration: const InputDecoration(labelText: 'Iron'),
+                onChanged: (value) => newIron = value,
+              ),
+              TextField(
+                decoration: const InputDecoration(labelText: 'Calcium'),
+                onChanged: (value) => newCalcium = value,
+              ),
+              TextField(
+                decoration: const InputDecoration(labelText: 'Fats'),
+                onChanged: (value) => newFats = value,
+              ),
+              TextField(
+                decoration: const InputDecoration(labelText: 'Sugars'),
+                onChanged: (value) => newSugars = value,
+              ),
+              TextField(
+                decoration: const InputDecoration(labelText: 'Calories'),
+                onChanged: (value) => newCalories = value,
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text('Cancel'),
+            ),
+            TextButton(
+              onPressed: () async {
+                if (newDate.trim().isNotEmpty) {
+                  await _presenter.addNutritionLog(newDate.trim(), newLog, newIron, newCalcium, newFats, newSugars, newCalories);
+                  setState(() {});
+                  Navigator.pop(context);
+                }
+              },
+              child: const Text('Add'),
+            ),
+          ],
         );
       },
     );
@@ -87,25 +110,22 @@ class _NutritionLogScreenState extends State<NutritionLogScreen> {
   @override
   Widget build(BuildContext context) {
     final nutritionLogs = _presenter.nutritionLog;
-    
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Nutrition Log'),
-      ),
+      appBar: AppBar(title: const Text('Nutrition Logs')),
       body: _isLoading ? const Center(child: CircularProgressIndicator()) : ListView.builder(
-          itemCount: nutritionLogs.length,
-          itemBuilder: (context, index) {
-            final log = nutritionLogs[index];
-            return CheckboxListTile(
-              title: Text(log.date),
-              subtitle: Text(log.log),
-              value: true,
-              onChanged: (_) async {
-                await _presenter.addNutritionLog(log.date, log.log);
-                setState(() {});
-              },
-            );
-  })
+        itemCount: nutritionLogs.length,
+        itemBuilder: ((context, index) {
+          final nutritionLog = nutritionLogs[index];
+          return ListTile(
+            title: Text(nutritionLog.date),
+            subtitle: nutritionLog.log != null ? Text(nutritionLog.log!) : null,
+          );
+        }),
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: _showAddNutritionLogDialog,
+        child: const Icon(Icons.add),
+      ),
     );
   }
 }

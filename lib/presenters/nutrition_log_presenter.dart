@@ -9,9 +9,9 @@ class NutritionLogPresenter {
     _nutritionLog..clear()..addAll(fetched);
   }
 
-  Future<void> addNutritionLog(String date, String log) async {
-    await NutritionLog.addLog(date, log);
-    _nutritionLog.add(NutritionLog(date: date, log: log));
+  Future<void> addNutritionLog(String date, String log, String iron, String calcium, String fats, String sugars, String calories) async {
+    await NutritionLog.addLog(date, log, iron, calcium, fats, sugars, calories);
+    _nutritionLog.add(NutritionLog(date: date, log: log, iron: iron, calcium: calcium, fats: fats, sugars: sugars, calories: calories));
   }
 
   int get totalLogCount => _nutritionLog.length;
