@@ -1,34 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-//import 'package:groupmeepeatright/models/upload_nutrition.dart';
-import 'package:groupmeepeatright/models/nutritionQuery.dart';
 
-//import 'firebase_options.dart';
+
 import 'services/notification_service.dart';
 import 'views/main_navigation.dart';
 import 'views/login_screen.dart';
 
-List<String> ingredientList = [];
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-
-  await Firebase.initializeApp();
-
-  //this code can upload the nutritional dataset, uncomment if you need to rebuild the data
-
-  // await deleteAllNutritionDocs(onProgress: (n) => debugPrint('deleted $n'));
-  // await uploadNutritionCsv(
-  //   onProgress: (done, total) => debugPrint('$done / $total'),
-  // );
-
-  // ingredientList = await listFoods();
-  // debugPrint('Loaded ${ingredientList.length} ingredients');
-
+  await Firebase.initializeApp(); 
   await NotificationService.initialize();
   await NotificationService.scheduleDailyNotification();
-
   runApp(const EatRightApp());
 }
 
