@@ -2,8 +2,9 @@ import 'package:flutter/material.dart';
 
 import 'main_navigation.dart';
 import '../home_screen.dart';
+import '../main.dart';
 
-//void main() => runApp(const CalendarApp());
+void main() => runApp(const CalendarApp());
 
 class CalendarApp extends StatelessWidget {
   const CalendarApp({super.key});
@@ -19,12 +20,13 @@ class CalendarApp extends StatelessWidget {
   }
 }
 
-/// Simple event model.
+/// Simple event model. Fields are mutable so events can be edited in place.
 class CalendarEvent {
-  final String title;
-  final TimeOfDay? time;
+  String title;
+  TimeOfDay? time;
+  bool completed;
 
-  CalendarEvent(this.title, {this.time});
+  CalendarEvent(this.title, {this.time, this.completed = false});
 }
 
 class WeeklyCalendarScreen extends StatefulWidget {
@@ -140,9 +142,11 @@ class _WeeklyCalendarScreenState extends State<WeeklyCalendarScreen> {
     }
   }
 
+  /// Incomplete events first, then by time (all-day events lead each group).
   List<CalendarEvent> _eventsFor(DateTime day) {
     final list = List<CalendarEvent>.from(_events[_dateOnly(day)] ?? []);
     list.sort((a, b) {
+      if (a.completed != b.completed) return a.completed ? 1 : -1;
       if (a.time == null && b.time == null) return 0;
       if (a.time == null) return -1;
       if (b.time == null) return 1;
@@ -153,39 +157,77 @@ class _WeeklyCalendarScreenState extends State<WeeklyCalendarScreen> {
     return list;
   }
 
-  Future<void> _addEvent() async {
-    final controller = TextEditingController();
-    TimeOfDay? time;
+  /// Shared add/edit dialog. Returns the chosen title and time, or null
+  /// if cancelled. The title comes from [ingredientList] via a DropdownMenu.
+  Future<({String title, TimeOfDay? time})?> _showEventDialog({
+    CalendarEvent? existing,
+  }) {
+    String? selected = existing?.title;
+    TimeOfDay? time = existing?.time;
+    final isEditing = existing != null;
 
-    final result = await showDialog<CalendarEvent>(
+    // If the event's title is no longer in the list, still show it as an option.
+    final options = <String>[
+      ...ingredientList,
+      if (selected != null && !ingredientList.contains(selected)) selected,
+    ];
+
+    return showDialog<({String title, TimeOfDay? time})>(
       context: context,
       builder: (ctx) => StatefulBuilder(
         builder: (ctx, setDialogState) => AlertDialog(
           title: Text(
-            'New event · ${_dayLabels[_selectedDay.weekday % 7]} '
+            '${isEditing ? 'Edit' : 'New'} event · '
+            '${_dayLabels[_selectedDay.weekday % 7]} '
             '${_selectedDay.month}/${_selectedDay.day}',
           ),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              TextField(
-                controller: controller,
-                autofocus: true,
-                decoration: const InputDecoration(labelText: 'Title'),
-              ),
-              const SizedBox(height: 12),
-              OutlinedButton.icon(
-                icon: const Icon(Icons.access_time),
-                label: Text(
-                  time == null ? 'Add time (optional)' : time!.format(ctx),
+              if (options.isEmpty)
+                const Padding(
+                  padding: EdgeInsets.only(bottom: 8),
+                  child: Text('No ingredients available. Add some first.'),
+                )
+              else
+                DropdownMenu<String>(
+                  width: 280,
+                  maxLines: 1,
+                  initialSelection: selected,
+                  label: const Text('Event'),
+                  hintText: 'Choose an ingredient',
+                  enableFilter: true,
+                  requestFocusOnTap: true,
+                  menuHeight: 10,
+                  dropdownMenuEntries: options
+                      .map((i) => DropdownMenuEntry<String>(value: i, label: i))
+                      .toList(),
+                  onSelected: (value) => setDialogState(() => selected = value),
                 ),
-                onPressed: () async {
-                  final t = await showTimePicker(
-                    context: ctx,
-                    initialTime: TimeOfDay.now(),
-                  );
-                  if (t != null) setDialogState(() => time = t);
-                },
+              const SizedBox(height: 12),
+              Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  OutlinedButton.icon(
+                    icon: const Icon(Icons.access_time),
+                    label: Text(
+                      time == null ? 'Add time (optional)' : time!.format(ctx),
+                    ),
+                    onPressed: () async {
+                      final t = await showTimePicker(
+                        context: ctx,
+                        initialTime: time ?? TimeOfDay.now(),
+                      );
+                      if (t != null) setDialogState(() => time = t);
+                    },
+                  ),
+                  if (time != null)
+                    IconButton(
+                      tooltip: 'Clear time',
+                      icon: const Icon(Icons.close),
+                      onPressed: () => setDialogState(() => time = null),
+                    ),
+                ],
               ),
             ],
           ),
@@ -195,36 +237,75 @@ class _WeeklyCalendarScreenState extends State<WeeklyCalendarScreen> {
               child: const Text('Cancel'),
             ),
             FilledButton(
-              onPressed: () {
-                final title = controller.text.trim();
-                if (title.isEmpty) return;
-                Navigator.pop(ctx, CalendarEvent(title, time: time));
-              },
-              child: const Text('Add'),
+              onPressed: selected == null
+                  ? null
+                  : () => Navigator.pop(ctx, (title: selected!, time: time)),
+              child: Text(isEditing ? 'Save' : 'Add'),
             ),
           ],
         ),
       ),
     );
-    controller.dispose();
+  }
 
-    if (result != null) {
-      setState(() {
-        _events.putIfAbsent(_dateOnly(_selectedDay), () => []).add(result);
-      });
-    }
+  Future<void> _addEvent() async {
+    final result = await _showEventDialog();
+    if (result == null) return;
+    setState(() {
+      _events
+          .putIfAbsent(_dateOnly(_selectedDay), () => [])
+          .add(CalendarEvent(result.title, time: result.time));
+    });
+  }
+
+  Future<void> _editEvent(CalendarEvent event) async {
+    final result = await _showEventDialog(existing: event);
+    if (result == null) return;
+    setState(() {
+      event.title = result.title;
+      event.time = result.time;
+    });
+  }
+
+  void _toggleComplete(CalendarEvent event) {
+    setState(() => event.completed = !event.completed);
   }
 
   void _deleteEvent(CalendarEvent event) {
-    setState(() {
-      _events[_dateOnly(_selectedDay)]?.remove(event);
-    });
+    final day = _dateOnly(_selectedDay);
+    final list = _events[day];
+    if (list == null) return;
+    final index = list.indexOf(event);
+    if (index == -1) return;
+
+    setState(() => list.removeAt(index));
+
+    ScaffoldMessenger.of(context)
+      ..hideCurrentSnackBar()
+      ..showSnackBar(
+        SnackBar(
+          content: Text('Deleted "${event.title}"'),
+          action: SnackBarAction(
+            label: 'Undo',
+            onPressed: () => setState(() {
+              final l = _events.putIfAbsent(day, () => []);
+              l.insert(index.clamp(0, l.length), event);
+            }),
+          ),
+        ),
+      );
   }
 
   // ---------- UI ----------
 
   @override
   Widget build(BuildContext context) {
+    final pages = [
+      _buildCalendarPage(context),
+      _buildPlaceholderPage(Icons.check_circle_outline, 'Tasks'),
+      _buildPlaceholderPage(Icons.settings_outlined, 'Settings'),
+    ];
+
     return Scaffold(
       appBar: AppBar(
         title: Text(['Calendar', 'Home', 'Settings'][_navIndex]),
@@ -239,11 +320,14 @@ class _WeeklyCalendarScreenState extends State<WeeklyCalendarScreen> {
               ]
             : null,
       ),
-      floatingActionButton: FloatingActionButton(
-        tooltip: 'Add event',
-        onPressed: _addEvent,
-        child: const Icon(Icons.add),
-      ),
+      body: IndexedStack(index: _navIndex, children: pages),
+      floatingActionButton: _navIndex == 0
+          ? FloatingActionButton(
+              tooltip: 'Add event',
+              onPressed: _addEvent,
+              child: const Icon(Icons.add),
+            )
+          : null,
     );
   }
 
@@ -326,31 +410,88 @@ class _WeeklyCalendarScreenState extends State<WeeklyCalendarScreen> {
                 : ListView.builder(
                     padding: const EdgeInsets.only(bottom: 88),
                     itemCount: events.length,
-                    itemBuilder: (context, i) {
-                      final e = events[i];
-                      return Dismissible(
-                        key: ObjectKey(e),
-                        direction: DismissDirection.endToStart,
-                        background: Container(
-                          color: theme.colorScheme.errorContainer,
-                          alignment: Alignment.centerRight,
-                          padding: const EdgeInsets.only(right: 20),
-                          child: const Icon(Icons.delete),
-                        ),
-                        onDismissed: (_) => _deleteEvent(e),
-                        child: ListTile(
-                          leading: CircleAvatar(
-                            backgroundColor: theme.colorScheme.primaryContainer,
-                            child: const Icon(Icons.event, size: 20),
-                          ),
-                          title: Text(e.title),
-                          subtitle: Text(e.time?.format(context) ?? 'All day'),
-                        ),
-                      );
-                    },
+                    itemBuilder: (context, i) =>
+                        _buildEventTile(theme, events[i]),
                   ),
           ),
         ],
+      ),
+    );
+  }
+
+  Widget _buildEventTile(ThemeData theme, CalendarEvent e) {
+    final muted = theme.colorScheme.outline;
+
+    return Dismissible(
+      key: ObjectKey(e),
+      direction: DismissDirection.endToStart,
+      background: Container(
+        color: theme.colorScheme.errorContainer,
+        alignment: Alignment.centerRight,
+        padding: const EdgeInsets.only(right: 20),
+        child: const Icon(Icons.delete),
+      ),
+      onDismissed: (_) => _deleteEvent(e),
+      child: ListTile(
+        onTap: () => _editEvent(e),
+        leading: Checkbox(
+          value: e.completed,
+          onChanged: (_) => _toggleComplete(e),
+        ),
+        title: Text(
+          e.title,
+          style: e.completed
+              ? TextStyle(decoration: TextDecoration.lineThrough, color: muted)
+              : null,
+        ),
+        subtitle: Text(
+          e.time?.format(context) ?? 'All day',
+          style: e.completed ? TextStyle(color: muted) : null,
+        ),
+        trailing: PopupMenuButton<String>(
+          tooltip: 'Event options',
+          onSelected: (action) {
+            switch (action) {
+              case 'edit':
+                _editEvent(e);
+              case 'complete':
+                _toggleComplete(e);
+              case 'delete':
+                _deleteEvent(e);
+            }
+          },
+          itemBuilder: (_) => [
+            const PopupMenuItem(
+              value: 'edit',
+              child: ListTile(
+                leading: Icon(Icons.edit_outlined),
+                title: Text('Edit'),
+              ),
+            ),
+            PopupMenuItem(
+              value: 'complete',
+              child: ListTile(
+                leading: Icon(
+                  e.completed ? Icons.undo : Icons.check_circle_outline,
+                ),
+                title: Text(e.completed ? 'Mark incomplete' : 'Mark complete'),
+              ),
+            ),
+            PopupMenuItem(
+              value: 'delete',
+              child: ListTile(
+                leading: Icon(
+                  Icons.delete_outline,
+                  color: theme.colorScheme.error,
+                ),
+                title: Text(
+                  'Delete',
+                  style: TextStyle(color: theme.colorScheme.error),
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -360,12 +501,15 @@ class _WeeklyCalendarScreenState extends State<WeeklyCalendarScreen> {
     final scheme = theme.colorScheme;
     final isSelected = _isSameDay(day, _selectedDay);
     final isToday = _isSameDay(day, DateTime.now());
-    final hasEvents = (_events[_dateOnly(day)]?.isNotEmpty ?? false);
+    final dayEvents = _events[_dateOnly(day)] ?? const <CalendarEvent>[];
+    final hasEvents = dayEvents.isNotEmpty;
+    final allDone = hasEvents && dayEvents.every((e) => e.completed);
 
     final bg = isSelected ? scheme.primary : Colors.transparent;
     final fg = isSelected
         ? scheme.onPrimary
         : (isToday ? scheme.primary : scheme.onSurface);
+    final dotColor = isSelected ? scheme.onPrimary : scheme.primary;
 
     return GestureDetector(
       onTap: () => setState(() => _selectedDay = day),
@@ -395,15 +539,14 @@ class _WeeklyCalendarScreenState extends State<WeeklyCalendarScreen> {
               ),
             ),
             const SizedBox(height: 6),
-            // Event indicator dot
+            // Event indicator: filled dot = pending events, ring = all done.
             Container(
               width: 6,
               height: 6,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: hasEvents
-                    ? (isSelected ? scheme.onPrimary : scheme.primary)
-                    : Colors.transparent,
+                color: hasEvents && !allDone ? dotColor : Colors.transparent,
+                border: allDone ? Border.all(color: dotColor) : null,
               ),
             ),
           ],

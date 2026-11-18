@@ -8,6 +8,8 @@ import 'firebase_options.dart';
 import 'views/main_navigation.dart';
 import 'views/login_screen.dart';
 
+List<String> ingredientList = [];
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
@@ -20,7 +22,8 @@ void main() async {
   //   onProgress: (done, total) => debugPrint('$done / $total'),
   // );
 
-  final ingredientList = await listFoods();
+  // ingredientList = await listFoods();
+  // debugPrint('Loaded ${ingredientList.length} ingredients');
 
   runApp(const EatRightApp());
 }
