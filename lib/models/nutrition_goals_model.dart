@@ -41,7 +41,7 @@ class NutritionGoals {
     );
   }
 
-  // Save or update the current user's nutrition goals.
+
   static Future<void> saveGoals(NutritionGoals goals) async {
     final userId = _auth.currentUser?.uid;
     if (userId == null) {

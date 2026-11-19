@@ -9,34 +9,37 @@ class DashboardPresenter {
   DashboardPresenter(this.view);
 
   Future<void> loadArticles() async {
-    try {
-      view.showLoading();
+  try {
+    print('DashboardPresenter.loadArticles called');
+    print('Dashboard: Starting Firestore request');
 
-      QuerySnapshot snapshot =
-          await FirebaseFirestore.instance
-              .collection('articles')
-              .get();
+    view.showLoading();
 
-      List<HealthyArticle> articles = snapshot.docs
-          .map(
-            (doc) => HealthyArticle.fromMap(
-              doc.data() as Map<String, dynamic>,
-            ),
-          )
-          .toList();
+    QuerySnapshot snapshot = await FirebaseFirestore.instance
+        .collection('articles')
+        .get()
+        .timeout(const Duration(seconds: 15));
 
-      articles.shuffle();
+    print('Dashboard: Retrieved ${snapshot.docs.length} articles');
 
-      view.displayArticles(
-        articles.take(5).toList(),
-      );
+    List<HealthyArticle> articles = snapshot.docs
+        .map(
+          (doc) => HealthyArticle.fromMap(
+            doc.data() as Map<String, dynamic>,
+          ),
+        )
+        .toList();
 
-      view.hideLoading();
-    } catch (e) {
-      view.hideLoading();
-      view.showError(
-        'Failed to load articles: $e',
-      );
-    }
+    articles.shuffle();
+
+    view.displayArticles(articles.take(5).toList());
+  } catch (e, stackTrace) {
+    print('Dashboard error: $e');
+    print(stackTrace);
+
+    view.showError('Failed to load articles: $e');
+  } finally {
+    view.hideLoading();
   }
+}
 }
