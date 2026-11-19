@@ -58,7 +58,7 @@ class NotificationService {
     );
 
 
-    
+  
     if (scheduledTime.isBefore(now) ||
         scheduledTime.isAtSameMomentAs(now)) {
       scheduledTime = scheduledTime.add(const Duration(days: 1));
@@ -81,7 +81,7 @@ class NotificationService {
     await _notifications.zonedSchedule(
       id: 0,
       title: 'Time to check in with EatRight!',
-      body: 'Take a moment to keep working toward your goals.',
+      body: 'Take a moment to keep working toward your goals',
       scheduledDate: scheduledTime,
       notificationDetails: notificationDetails,
       androidScheduleMode: AndroidScheduleMode.inexactAllowWhileIdle,
@@ -89,7 +89,7 @@ class NotificationService {
     );
   }
 
-  //gonna add option to profile to disable these notifications
+  //gonna add option to profile to disable these notifications if time allows
   static Future<void> cancelDailyNotification() async {
     await _notifications.cancel(id: 0);
   }

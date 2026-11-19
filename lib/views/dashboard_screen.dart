@@ -25,6 +25,8 @@ class _DashboardPageState extends State<DashboardPage>
   void initState() {
     super.initState();
 
+    print('DashboardPage initialized');
+
     presenter = DashboardPresenter(this);
 
     presenter.loadArticles();
