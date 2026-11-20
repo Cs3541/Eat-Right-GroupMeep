@@ -6,6 +6,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'services/notification_service.dart';
 import 'views/main_navigation.dart';
 import 'views/login_screen.dart';
+import 'theme/app_theme.dart';
 
 
 void main() async {
@@ -23,7 +24,7 @@ class EatRightApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'EatRight',
-      theme: ThemeData(primarySwatch: Colors.purple),
+      theme: AppTheme.lightTheme,
       home: const SplashScreen(),
     );
   }
