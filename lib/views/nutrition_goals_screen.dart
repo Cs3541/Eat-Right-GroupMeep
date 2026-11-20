@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+
 import '../models/nutrition_goals_model.dart';
 import '../presenters/nutrition_goals_presenter.dart';
+import '../theme/app_theme.dart';
 
 class NutritionGoalsScreen extends StatefulWidget {
   const NutritionGoalsScreen({super.key});
@@ -10,7 +12,8 @@ class NutritionGoalsScreen extends StatefulWidget {
       _NutritionGoalsScreenState();
 }
 
-class _NutritionGoalsScreenState extends State<NutritionGoalsScreen> {
+class _NutritionGoalsScreenState
+    extends State<NutritionGoalsScreen> {
   final NutritionGoalsPresenter _presenter =
       NutritionGoalsPresenter();
 
@@ -20,12 +23,9 @@ class _NutritionGoalsScreenState extends State<NutritionGoalsScreen> {
   final _proteinController = TextEditingController();
   final _carbsController = TextEditingController();
   final _fatController = TextEditingController();
-  final _waterController = TextEditingController();
 
   bool _isLoading = true;
   bool _isSaving = false;
-
-  static const Color primaryPurple = Color(0xFF7956A5);
 
   @override
   void initState() {
@@ -43,14 +43,16 @@ class _NutritionGoalsScreenState extends State<NutritionGoalsScreen> {
       if (goals != null) {
         _caloriesController.text = goals.calories.toString();
         _proteinController.text = goals.protein.toString();
-        _carbsController.text = goals.carbohydrates.toString();
+        _carbsController.text =
+            goals.carbohydrates.toString();
         _fatController.text = goals.fat.toString();
-        _waterController.text = goals.water.toString();
       }
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Could not load goals: $e')),
+          SnackBar(
+            content: Text('Could not load goals: $e'),
+          ),
         );
       }
     } finally {
@@ -75,7 +77,6 @@ class _NutritionGoalsScreenState extends State<NutritionGoalsScreen> {
       protein: double.parse(_proteinController.text),
       carbohydrates: double.parse(_carbsController.text),
       fat: double.parse(_fatController.text),
-      water: int.parse(_waterController.text),
     );
 
     try {
@@ -85,8 +86,10 @@ class _NutritionGoalsScreenState extends State<NutritionGoalsScreen> {
 
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text('Nutrition goals saved successfully!'),
-          backgroundColor: Colors.green,
+          content: Text(
+            'Nutrition goals saved successfully!',
+          ),
+          backgroundColor: AppTheme.darkGreen,
         ),
       );
 
@@ -94,7 +97,9 @@ class _NutritionGoalsScreenState extends State<NutritionGoalsScreen> {
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Could not save goals: $e')),
+          SnackBar(
+            content: Text('Could not save goals: $e'),
+          ),
         );
       }
     } finally {
@@ -106,7 +111,6 @@ class _NutritionGoalsScreenState extends State<NutritionGoalsScreen> {
     }
   }
 
-  // Reusable input field for each nutrition goal.
   Widget _buildGoalField({
     required String label,
     required String unit,
@@ -123,16 +127,6 @@ class _NutritionGoalsScreenState extends State<NutritionGoalsScreen> {
         decoration: InputDecoration(
           labelText: label,
           suffixText: unit,
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(12),
-          ),
-          focusedBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(12),
-            borderSide: const BorderSide(
-              color: primaryPurple,
-              width: 2,
-            ),
-          ),
         ),
         validator: (value) {
           if (value == null || value.trim().isEmpty) {
@@ -141,11 +135,14 @@ class _NutritionGoalsScreenState extends State<NutritionGoalsScreen> {
 
           final number = double.tryParse(value);
 
-          if (number == null || !number.isFinite || number <= 0) {
+          if (number == null ||
+              !number.isFinite ||
+              number <= 0) {
             return 'Enter a valid positive number';
           }
 
-          if (wholeNumber && number != number.roundToDouble()) {
+          if (wholeNumber &&
+              number != number.roundToDouble()) {
             return 'Please enter a whole number';
           }
 
@@ -161,24 +158,29 @@ class _NutritionGoalsScreenState extends State<NutritionGoalsScreen> {
     _proteinController.dispose();
     _carbsController.dispose();
     _fatController.dispose();
-    _waterController.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF8F7FA),
+      backgroundColor: AppTheme.lightGreen,
+
       appBar: AppBar(
         title: const Text(
           'Nutrition Goals',
-          style: TextStyle(fontWeight: FontWeight.bold),
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+          ),
         ),
-        foregroundColor: primaryPurple,
-        backgroundColor: Colors.white,
       ),
+
       body: _isLoading
-          ? const Center(child: CircularProgressIndicator())
+          ? const Center(
+              child: CircularProgressIndicator(
+                color: AppTheme.darkGreen,
+              ),
+            )
           : SingleChildScrollView(
               padding: const EdgeInsets.all(20),
               child: Form(
@@ -186,75 +188,101 @@ class _NutritionGoalsScreenState extends State<NutritionGoalsScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Icon(
-                      Icons.track_changes,
-                      size: 45,
-                      color: primaryPurple,
+                    // Header
+                    const Center(
+                      child: Icon(
+                        Icons.track_changes,
+                        size: 48,
+                        color: AppTheme.mutedRed,
+                      ),
                     ),
 
                     const SizedBox(height: 12),
 
-                    const Text(
-                      'Set Your Daily Goals',
-                      style: TextStyle(
-                        fontSize: 23,
-                        fontWeight: FontWeight.bold,
+                    const Center(
+                      child: Text(
+                        'Set Your Daily Goals',
+                        style: TextStyle(
+                          fontSize: 23,
+                          fontWeight: FontWeight.bold,
+                          color: AppTheme.darkBrown,
+                        ),
                       ),
                     ),
 
                     const SizedBox(height: 8),
 
                     Text(
-                      'Customize your daily nutrition targets. '
+                      'Customize your daily nutrition goals. '
                       'You can update these goals whenever you need to.',
+                      textAlign: TextAlign.center,
                       style: TextStyle(
                         fontSize: 14,
-                        color: Colors.grey[600],
+                        color: AppTheme.darkBrown
+                            .withValues(alpha: 0.7),
                         height: 1.5,
                       ),
                     ),
 
                     const SizedBox(height: 28),
 
-                    _buildGoalField(
-                      label: 'Daily Calories',
-                      unit: 'kcal',
-                      controller: _caloriesController,
-                      wholeNumber: true,
+                    // Goal input card
+                    Card(
+                      child: Padding(
+                        padding: const EdgeInsets.all(18),
+                        child: Column(
+                          crossAxisAlignment:
+                              CrossAxisAlignment.start,
+                          children: [
+                            const Text(
+                              'Daily Nutrition Targets',
+                              style: TextStyle(
+                                fontSize: 17,
+                                fontWeight: FontWeight.bold,
+                                color: AppTheme.darkBrown,
+                              ),
+                            ),
+
+                            const SizedBox(height: 20),
+
+                            _buildGoalField(
+                              label: 'Daily Calories',
+                              unit: 'kcal',
+                              controller: _caloriesController,
+                              wholeNumber: true,
+                            ),
+
+                            _buildGoalField(
+                              label: 'Protein',
+                              unit: 'g',
+                              controller: _proteinController,
+                            ),
+
+                            _buildGoalField(
+                              label: 'Carbohydrates',
+                              unit: 'g',
+                              controller: _carbsController,
+                            ),
+
+                            _buildGoalField(
+                              label: 'Fat',
+                              unit: 'g',
+                              controller: _fatController,
+                            ),
+                          ],
+                        ),
+                      ),
                     ),
 
-                    _buildGoalField(
-                      label: 'Protein',
-                      unit: 'g',
-                      controller: _proteinController,
-                    ),
+                    const SizedBox(height: 20),
 
-                    _buildGoalField(
-                      label: 'Carbohydrates',
-                      unit: 'g',
-                      controller: _carbsController,
-                    ),
-
-                    _buildGoalField(
-                      label: 'Fat',
-                      unit: 'g',
-                      controller: _fatController,
-                    ),
-
-                    _buildGoalField(
-                      label: 'Water',
-                      unit: 'mL',
-                      controller: _waterController,
-                      wholeNumber: true,
-                    ),
-
-                    const SizedBox(height: 12),
-
+                    // Save button
                     SizedBox(
                       width: double.infinity,
                       height: 52,
                       child: ElevatedButton.icon(
-                        onPressed: _isSaving ? null : _saveGoals,
+                        onPressed:
+                            _isSaving ? null : _saveGoals,
                         icon: _isSaving
                             ? const SizedBox(
                                 height: 18,
@@ -266,14 +294,9 @@ class _NutritionGoalsScreenState extends State<NutritionGoalsScreen> {
                               )
                             : const Icon(Icons.save_outlined),
                         label: Text(
-                          _isSaving ? 'Saving...' : 'Save Goals',
-                        ),
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: primaryPurple,
-                          foregroundColor: Colors.white,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12),
-                          ),
+                          _isSaving
+                              ? 'Saving...'
+                              : 'Save Goals',
                         ),
                       ),
                     ),

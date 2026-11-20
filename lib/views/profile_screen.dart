@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 
 import '../presenters/auth_presenter.dart';
+import '../theme/app_theme.dart';
 import 'login_screen.dart';
 import 'nutrition_goals_screen.dart';
 
@@ -16,17 +17,14 @@ class ProfileScreen extends StatefulWidget {
 class _ProfileScreenState extends State<ProfileScreen> {
   final AuthPresenter _presenter = AuthPresenter();
 
-  static const Color primaryPurple = Color(0xFF7956A5);
-  static const Color lightPurple = Color(0xFFF2EDF8);
-
-//feel free to add more profile pictures here
+  // Available profile pictures
   final List<String> _avatarPaths = [
-  'assets/avatars/apple.png',
-  'assets/avatars/blueberry.png',
-  'assets/avatars/strawberry.png',
-  'assets/avatars/burger.png',
-  'assets/avatars/bowl.png',
-];
+    'assets/avatars/apple.png',
+    'assets/avatars/blueberry.png',
+    'assets/avatars/strawberry.png',
+    'assets/avatars/burger.png',
+    'assets/avatars/bowl.png',
+  ];
 
   String? _selectedAvatar;
 
@@ -36,7 +34,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     _loadProfilePicture();
   }
 
-
+  // Load profile picture from Firebase
   Future<void> _loadProfilePicture() async {
     final user = FirebaseAuth.instance.currentUser;
 
@@ -57,7 +55,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     }
   }
 
-
+  // Save selected profile picture
   Future<void> _selectAvatar(
     BuildContext dialogContext,
     String avatarPath,
@@ -97,17 +95,18 @@ class _ProfileScreenState extends State<ProfileScreen> {
     }
   }
 
-//profile pic popup
+  // Profile picture selection popup
   void _showAvatarDialog() {
     showDialog(
       context: context,
       builder: (dialogContext) {
         return AlertDialog(
+          backgroundColor: AppTheme.lightGreen,
           title: const Text(
             'Select New Profile Picture',
             style: TextStyle(
               fontWeight: FontWeight.bold,
-              color: primaryPurple,
+              color: AppTheme.darkBrown,
             ),
           ),
           content: SizedBox(
@@ -136,14 +135,15 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       shape: BoxShape.circle,
                       border: Border.all(
                         color: isSelected
-                            ? primaryPurple
-                            : Colors.transparent,
-                        width: 3,
+                            ? AppTheme.darkGreen
+                            : AppTheme.originalLightGreen,
+                        width: isSelected ? 3 : 1,
                       ),
                     ),
                     padding: const EdgeInsets.all(3),
                     child: CircleAvatar(
-                      backgroundColor: lightPurple,
+                      backgroundColor:
+                          AppTheme.originalLightGreen,
                       backgroundImage: AssetImage(avatar),
                     ),
                   ),
@@ -156,7 +156,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
               onPressed: () => Navigator.pop(dialogContext),
               child: const Text(
                 'Cancel',
-                style: TextStyle(color: primaryPurple),
+                style: TextStyle(
+                  color: AppTheme.darkGreen,
+                ),
               ),
             ),
           ],
@@ -165,6 +167,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
+  // Logout
   void _logout(BuildContext context) async {
     await _presenter.logout();
 
@@ -172,21 +175,33 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
     Navigator.pushAndRemoveUntil(
       context,
-      MaterialPageRoute(builder: (_) => const LoginScreen()),
+      MaterialPageRoute(
+        builder: (_) => const LoginScreen(),
+      ),
       (_) => false,
     );
   }
 
-  Widget _buildSectionTitle(String title, IconData icon) {
+  // Reusable section heading
+  Widget _buildSectionTitle(
+    String title,
+    IconData icon, {
+    Color iconColor = AppTheme.darkGreen,
+  }) {
     return Row(
       children: [
-        Icon(icon, color: primaryPurple, size: 22),
+        Icon(
+          icon,
+          color: iconColor,
+          size: 23,
+        ),
         const SizedBox(width: 10),
         Text(
           title,
           style: const TextStyle(
             fontSize: 17,
             fontWeight: FontWeight.bold,
+            color: AppTheme.darkBrown,
           ),
         ),
       ],
@@ -199,42 +214,99 @@ class _ProfileScreenState extends State<ProfileScreen> {
         _presenter.getCurrentUserEmail() ?? 'Unknown user';
 
     return Scaffold(
-      backgroundColor: const Color(0xFFF8F7FA),
+      backgroundColor: AppTheme.lightGreen,
 
       appBar: AppBar(
-        title: const Text(
-          'My Profile',
-          style: TextStyle(fontWeight: FontWeight.bold),
-        ),
         automaticallyImplyLeading: false,
-        backgroundColor: Colors.white,
-        foregroundColor: primaryPurple,
+        backgroundColor: AppTheme.lightGreen,
         elevation: 0,
       ),
 
       body: SingleChildScrollView(
-        padding: const EdgeInsets.all(20),
+        padding: const EdgeInsets.fromLTRB(16, 4, 16, 20),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            // Profile banner
+            Container(
+              width: double.infinity,
+              padding: const EdgeInsets.symmetric(
+                horizontal: 20,
+                vertical: 22,
+              ),
+              decoration: BoxDecoration(
+                color: AppTheme.darkGreen,
+                borderRadius: BorderRadius.circular(16),
+                border: Border.all(
+                  color: AppTheme.mediumGreen,
+                  width: 2,
+                ),
+              ),
+              child: Row(
+                children: [
+                  const Icon(
+                    Icons.eco,
+                    color: AppTheme.originalLightGreen,
+                    size: 32,
+                  ),
+                  const SizedBox(width: 14),
+                  const Expanded(
+                    child: Text(
+                      'My Profile',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 25,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                  const Icon(
+                    Icons.favorite,
+                    color: AppTheme.mutedRed,
+                    size: 26,
+                  ),
+                ],
+              ),
+            ),
 
-          
+            const SizedBox(height: 24),
+
+            // Profile picture and user information
             Center(
               child: Column(
                 children: [
-                  CircleAvatar(
-                    radius: 48,
-                    backgroundColor: lightPurple,
-                    backgroundImage: _selectedAvatar != null
-                        ? AssetImage(_selectedAvatar!)
-                        : null,
-                    child: _selectedAvatar == null
-                        ? const Icon(
-                            Icons.person,
-                            size: 55,
-                            color: primaryPurple,
-                          )
-                        : null,
+                  Container(
+                    padding: const EdgeInsets.all(4),
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      border: Border.all(
+                        color: AppTheme.darkBrown,
+                        width: 3,
+                      ),
+                      boxShadow: [
+                        BoxShadow(
+                          color: AppTheme.darkBrown
+                              .withValues(alpha: 0.15),
+                          blurRadius: 8,
+                          spreadRadius: 2,
+                        ),
+                      ],
+                    ),
+                    child: CircleAvatar(
+                      radius: 48,
+                      backgroundColor:
+                          AppTheme.originalLightGreen,
+                      backgroundImage: _selectedAvatar != null
+                          ? AssetImage(_selectedAvatar!)
+                          : null,
+                      child: _selectedAvatar == null
+                          ? const Icon(
+                              Icons.person,
+                              size: 55,
+                              color: AppTheme.darkGreen,
+                            )
+                          : null,
+                    ),
                   ),
 
                   const SizedBox(height: 8),
@@ -245,9 +317,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       Icons.edit,
                       size: 16,
                     ),
-                    label: const Text('Change Profile Picture'),
+                    label: const Text(
+                      'Change Profile Picture',
+                    ),
                     style: TextButton.styleFrom(
-                      foregroundColor: primaryPurple,
+                      foregroundColor: AppTheme.mutedRed,
                     ),
                   ),
 
@@ -258,6 +332,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     style: TextStyle(
                       fontSize: 25,
                       fontWeight: FontWeight.bold,
+                      color: AppTheme.darkBrown,
                     ),
                   ),
 
@@ -267,7 +342,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     email,
                     style: TextStyle(
                       fontSize: 14,
-                      color: Colors.grey[600],
+                      color: AppTheme.darkBrown
+                          .withValues(alpha: 0.65),
                     ),
                   ),
                 ],
@@ -276,29 +352,32 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
             const SizedBox(height: 32),
 
-        
+            // Account Information
             _buildSectionTitle(
               'Account Information',
               Icons.person_outline,
+              iconColor: AppTheme.mutedRed,
             ),
 
             const SizedBox(height: 12),
 
             Card(
-              elevation: 2,
-              color: Colors.white,
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(15),
+                borderRadius: BorderRadius.circular(16),
+                side: const BorderSide(
+                  color: AppTheme.originalLightGreen,
+                  width: 1.5,
+                ),
               ),
               child: Padding(
                 padding: const EdgeInsets.all(16),
                 child: Row(
                   children: [
                     const CircleAvatar(
-                      backgroundColor: lightPurple,
+                      backgroundColor: AppTheme.lightGreen,
                       child: Icon(
                         Icons.email_outlined,
-                        color: primaryPurple,
+                        color: AppTheme.mutedRed,
                       ),
                     ),
 
@@ -312,7 +391,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           Text(
                             'Email Address',
                             style: TextStyle(
-                              color: Colors.grey[600],
+                              color: AppTheme.darkBrown
+                                  .withValues(alpha: 0.65),
                               fontSize: 13,
                             ),
                           ),
@@ -324,6 +404,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             style: const TextStyle(
                               fontWeight: FontWeight.w600,
                               fontSize: 15,
+                              color: AppTheme.darkBrown,
                             ),
                           ),
                         ],
@@ -340,15 +421,18 @@ class _ProfileScreenState extends State<ProfileScreen> {
             _buildSectionTitle(
               'Nutrition Goals',
               Icons.track_changes,
+              iconColor: AppTheme.darkBrown,
             ),
 
             const SizedBox(height: 12),
 
             Card(
-              elevation: 2,
-              color: Colors.white,
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(15),
+                borderRadius: BorderRadius.circular(16),
+                side: const BorderSide(
+                  color: AppTheme.mediumGreen,
+                  width: 1.5,
+                ),
               ),
               child: Padding(
                 padding: const EdgeInsets.all(18),
@@ -361,17 +445,19 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       style: TextStyle(
                         fontSize: 17,
                         fontWeight: FontWeight.bold,
+                        color: AppTheme.darkBrown,
                       ),
                     ),
 
                     const SizedBox(height: 8),
 
                     Text(
-                      'Set daily nutrition targets for calories, '
-                      'protein, carbohydrates, fat, and water. '
+                      'Set daily nutrition goals for calories, '
+                      'protein, carbohydrates, and fat. '
                       'Track your progress toward your goals!',
                       style: TextStyle(
-                        color: Colors.grey[600],
+                        color: AppTheme.darkBrown
+                            .withValues(alpha: 0.7),
                         height: 1.5,
                         fontSize: 14,
                       ),
@@ -401,14 +487,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             fontWeight: FontWeight.bold,
                           ),
                         ),
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: primaryPurple,
-                          foregroundColor: Colors.white,
-                          shape: RoundedRectangleBorder(
-                            borderRadius:
-                                BorderRadius.circular(10),
-                          ),
-                        ),
                       ),
                     ),
                   ],
@@ -418,7 +496,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
             const SizedBox(height: 30),
 
-            
+            // Logout
             SizedBox(
               width: double.infinity,
               height: 50,
@@ -433,9 +511,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   ),
                 ),
                 style: OutlinedButton.styleFrom(
-                  foregroundColor: Colors.redAccent,
+                  foregroundColor: AppTheme.mutedRed,
                   side: const BorderSide(
-                    color: Colors.redAccent,
+                    color: AppTheme.mutedRed,
                   ),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(12),

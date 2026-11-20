@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
+import '../theme/app_theme.dart';
 import 'login_screen.dart';
 import 'signup_screen.dart';
 import 'profile_screen.dart';
@@ -10,15 +11,16 @@ import 'analytics_page_screen.dart';
 import 'planner_screen.dart';
 import 'dashboard_screen.dart';
 
-
 class MainNavigationScreen extends StatefulWidget {
   const MainNavigationScreen({super.key});
 
   @override
-  State<MainNavigationScreen> createState() => _MainNavigationScreenState();
+  State<MainNavigationScreen> createState() =>
+      _MainNavigationScreenState();
 }
 
-class _MainNavigationScreenState extends State<MainNavigationScreen> {
+class _MainNavigationScreenState
+    extends State<MainNavigationScreen> {
   int _selectedIndex = 0;
 
   void _onItemTapped(int index) {
@@ -34,12 +36,18 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const Scaffold(
-            body: Center(child: CircularProgressIndicator()),
+            backgroundColor: AppTheme.lightGreen,
+            body: Center(
+              child: CircularProgressIndicator(
+                color: AppTheme.darkGreen,
+              ),
+            ),
           );
         }
 
         final bool isLoggedIn = snapshot.data != null;
 
+        // Screens available when logged in
         final List<Widget> loggedInScreens = [
           HomeScreen(),
           DashboardPage(),
@@ -47,16 +55,18 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
           CalendarApp(),
           AnalyticsPageScreen(),
           ProfileScreen(),
-];
+        ];
+
+        // Screens available when logged out
         final List<Widget> loggedOutScreens = [
           LoginScreen(),
           SignupScreen(),
         ];
 
-        final List<Widget> screens = isLoggedIn
-            ? loggedInScreens
-            : loggedOutScreens;
+        final List<Widget> screens =
+            isLoggedIn ? loggedInScreens : loggedOutScreens;
 
+        // Navigation items
         final List<BottomNavigationBarItem> navItems =
             isLoggedIn
                 ? const [
@@ -84,7 +94,6 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
                       icon: Icon(Icons.person),
                       label: 'Profile',
                     ),
-
                   ]
                 : const [
                     BottomNavigationBarItem(
@@ -97,16 +106,30 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
                     ),
                   ];
 
-        final int safeIndex = _selectedIndex.clamp(0, screens.length - 1);
+        // Prevent an invalid index after login/logout
+        final int safeIndex =
+            _selectedIndex.clamp(0, screens.length - 1);
 
         return Scaffold(
+          backgroundColor: AppTheme.lightGreen,
+
           body: screens[safeIndex],
+
           bottomNavigationBar: BottomNavigationBar(
-            selectedItemColor: Colors.purple,
-            unselectedItemColor: Colors.grey,
             currentIndex: safeIndex,
             onTap: _onItemTapped,
             items: navItems,
+
+            backgroundColor: Colors.white,
+            selectedItemColor: AppTheme.darkGreen,
+            unselectedItemColor: AppTheme.mediumGreen,
+
+            type: BottomNavigationBarType.fixed,
+            elevation: 8,
+
+            selectedLabelStyle: const TextStyle(
+              fontWeight: FontWeight.w600,
+            ),
           ),
         );
       },

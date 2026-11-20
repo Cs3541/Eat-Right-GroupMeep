@@ -6,14 +6,14 @@ class NutritionGoals {
   final double protein;
   final double carbohydrates;
   final double fat;
-  final int water;
+
 
   NutritionGoals({
     required this.calories,
     required this.protein,
     required this.carbohydrates,
     required this.fat,
-    required this.water,
+    
   });
 
   static final _db = FirebaseDatabase.instance.ref();
@@ -37,7 +37,7 @@ class NutritionGoals {
       protein: (data['protein'] as num).toDouble(),
       carbohydrates: (data['carbohydrates'] as num).toDouble(),
       fat: (data['fat'] as num).toDouble(),
-      water: (data['water'] as num).toInt(),
+      
     );
   }
 
@@ -53,7 +53,6 @@ class NutritionGoals {
       'protein': goals.protein,
       'carbohydrates': goals.carbohydrates,
       'fat': goals.fat,
-      'water': goals.water,
     });
   }
 }
