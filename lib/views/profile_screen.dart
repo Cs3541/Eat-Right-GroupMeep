@@ -17,13 +17,14 @@ class ProfileScreen extends StatefulWidget {
 class _ProfileScreenState extends State<ProfileScreen> {
   final AuthPresenter _presenter = AuthPresenter();
 
-  // Available profile pictures
+  // Available profile pictures (more can be added)
   final List<String> _avatarPaths = [
     'assets/avatars/apple.png',
     'assets/avatars/blueberry.png',
     'assets/avatars/strawberry.png',
     'assets/avatars/burger.png',
     'assets/avatars/bowl.png',
+    'assets/avatars/icecream.png',
   ];
 
   String? _selectedAvatar;
@@ -34,7 +35,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     _loadProfilePicture();
   }
 
-  // Load profile picture from Firebase
+ 
   Future<void> _loadProfilePicture() async {
     final user = FirebaseAuth.instance.currentUser;
 
@@ -55,7 +56,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     }
   }
 
-  // Save selected profile picture
+  
   Future<void> _selectAvatar(
     BuildContext dialogContext,
     String avatarPath,
@@ -95,7 +96,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
     }
   }
 
-  // Profile picture selection popup
   void _showAvatarDialog() {
     showDialog(
       context: context,
@@ -182,7 +182,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
-  // Reusable section heading
+  
   Widget _buildSectionTitle(
     String title,
     IconData icon, {
@@ -227,7 +227,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Profile banner
+            
             Container(
               width: double.infinity,
               padding: const EdgeInsets.symmetric(
@@ -260,18 +260,28 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       ),
                     ),
                   ),
-                  const Icon(
-                    Icons.favorite,
-                    color: AppTheme.mutedRed,
-                    size: 26,
+                  Container(
+                    padding: const EdgeInsets.all(9),
+                    decoration: BoxDecoration(
+                      color: AppTheme.lightGreen,
+                      shape: BoxShape.circle,
+                      border: Border.all(
+                        color: AppTheme.mutedRed,
+                        width: 2.5,
+                      ),
+                    ),
+                    child: const Icon(
+                      Icons.favorite,
+                      color: AppTheme.mutedRed,
+                      size: 27,
+                    ),
                   ),
                 ],
               ),
             ),
 
             const SizedBox(height: 24),
-
-            // Profile picture and user information
+            
             Center(
               child: Column(
                 children: [
@@ -352,7 +362,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
             const SizedBox(height: 32),
 
-            // Account Information
+            
             _buildSectionTitle(
               'Account Information',
               Icons.person_outline,
@@ -365,8 +375,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(16),
                 side: const BorderSide(
-                  color: AppTheme.originalLightGreen,
-                  width: 1.5,
+                  color: AppTheme.mediumGreen,
+                  width: 3,
                 ),
               ),
               child: Padding(
@@ -417,7 +427,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
             const SizedBox(height: 28),
 
-            // Nutrition Goals
+            
             _buildSectionTitle(
               'Nutrition Goals',
               Icons.track_changes,
@@ -431,7 +441,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 borderRadius: BorderRadius.circular(16),
                 side: const BorderSide(
                   color: AppTheme.mediumGreen,
-                  width: 1.5,
+                  width: 3,
                 ),
               ),
               child: Padding(
@@ -496,7 +506,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
             const SizedBox(height: 30),
 
-            // Logout
+            
             SizedBox(
               width: double.infinity,
               height: 50,

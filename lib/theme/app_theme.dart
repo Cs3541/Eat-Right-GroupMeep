@@ -31,7 +31,7 @@ class AppTheme {
         onError: white,
       ),
 
-      // General text
+      
       textTheme: const TextTheme(
         headlineLarge: TextStyle(
           color: darkBrown,
@@ -57,7 +57,7 @@ class AppTheme {
         ),
       ),
 
-      // App bars
+      
       appBarTheme: const AppBarTheme(
         backgroundColor: lightGreen,
         foregroundColor: darkBrown,
@@ -65,7 +65,7 @@ class AppTheme {
         centerTitle: false,
       ),
 
-      // Cards
+      
       cardTheme: CardThemeData(
         color: white,
         elevation: 1,
@@ -75,7 +75,7 @@ class AppTheme {
         ),
       ),
 
-      // Main buttons
+      
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
           backgroundColor: darkGreen,
@@ -90,7 +90,7 @@ class AppTheme {
         ),
       ),
 
-      // Outlined buttons
+      
       outlinedButtonTheme: OutlinedButtonThemeData(
         style: OutlinedButton.styleFrom(
           foregroundColor: darkGreen,
@@ -101,7 +101,7 @@ class AppTheme {
         ),
       ),
 
-      // Input fields
+      
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
         fillColor: white,
@@ -130,7 +130,7 @@ class AppTheme {
         ),
       ),
 
-      // Bottom navigation
+     
       bottomNavigationBarTheme:
           const BottomNavigationBarThemeData(
         backgroundColor: white,
@@ -140,13 +140,13 @@ class AppTheme {
         elevation: 8,
       ),
 
-      // Dividers
+      
       dividerTheme: const DividerThemeData(
         color: originalLightGreen,
         thickness: 1,
       ),
 
-      // Progress indicators
+      
       progressIndicatorTheme:
           const ProgressIndicatorThemeData(
         color: darkGreen,
