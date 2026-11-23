@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class CreateRecipeScreen extends StatefulWidget {
   const CreateRecipeScreen({super.key});
@@ -16,7 +18,44 @@ class _CreateRecipeScreenState extends State<CreateRecipeScreen> {
   final TextEditingController _notesController = TextEditingController();
   final TextEditingController _tagsController = TextEditingController();
 
-  @override
+
+  //Function to send data to Firestore
+  Future<void> _saveData() async {
+    final title = _titleController.text.trim();
+    final createdBy = FirebaseAuth.instance.currentUser;
+    final image = _imageController.text.trim();
+    final ingredients = _ingredientsController.text.trim();
+    final directions = _directionsController.text.trim();
+    final notes = _notesController.text.trim();
+    final tags = _tagsController.text.trim();
+
+    if (title.isEmpty || image.isEmpty || ingredients.isEmpty || directions.isEmpty || notes.isEmpty || tags.isEmpty) return; // Prevent saving blank entries
+
+    try {
+      await FirebaseFirestore.instance.collection('recipes').add({
+        'title': title,
+        'createdBy': createdBy?.uid,
+        'image': image,
+        'ingredients': ingredients,
+        'directions': directions,
+        'notes': notes,
+        'tags': tags,
+        'createdAt': FieldValue.serverTimestamp(),
+      });
+
+      _titleController.clear();
+      _imageController.clear();
+      _ingredientsController.clear();
+      _directionsController.clear();
+      _notesController.clear();
+      _tagsController.clear(); // Clear the boxes after saving
+    } catch (e) {
+      debugPrint('Failed to write to Firestore: $e');
+    }
+  }
+
+
+  @override //cleanup controllers
   void dispose() {
     _titleController.dispose();
     _imageController.dispose();
@@ -61,7 +100,7 @@ class _CreateRecipeScreenState extends State<CreateRecipeScreen> {
                 // Handle title changes here
               },
             ),
-            const SizedBox(height: 16.0),
+            const SizedBox(height: 10.0),
 
             // IMAGE INPUT
             TextField(
@@ -78,7 +117,7 @@ class _CreateRecipeScreenState extends State<CreateRecipeScreen> {
                 // Handle image URL changes here
               },
             ),
-            const SizedBox(height: 20),
+            const SizedBox(height: 10.0),
 
             // INGREDIENTS INPUT
             TextField(
@@ -95,7 +134,7 @@ class _CreateRecipeScreenState extends State<CreateRecipeScreen> {
                 // Handle ingredients changes here
               },
             ),
-            const SizedBox(height: 20),
+            const SizedBox(height: 10.0),
 
             // DIRECTIONS INPUT
             TextField(
@@ -112,7 +151,7 @@ class _CreateRecipeScreenState extends State<CreateRecipeScreen> {
                 // Handle directions changes here
               },
             ),
-            const SizedBox(height: 20),
+            const SizedBox(height: 10.0),
 
             // NOTES INPUT
             TextField(
@@ -129,7 +168,7 @@ class _CreateRecipeScreenState extends State<CreateRecipeScreen> {
                 // Handle notes changes here
               },
             ),
-            const SizedBox(height: 20),
+            const SizedBox(height: 10.0),
 
             // TAGS INPUT
             TextField(
@@ -146,33 +185,13 @@ class _CreateRecipeScreenState extends State<CreateRecipeScreen> {
                 // Handle tags changes here
               },
             ),
+            const SizedBox(height: 10.0),
+            ElevatedButton(
+              onPressed: _saveData,
+              child: const Text('Submit'),
+            ),
           ],
         ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        // When the user presses the button, show an alert dialog containing
-        // the text that the user has entered into the text field.
-        onPressed: () {
-          showDialog<void>(
-            context: context,
-            builder: (context) {
-              return AlertDialog(
-                // Retrieve the text that the user has entered by using the
-                // TextEditingController.
-                content: Text(
-                  'Title: "${_titleController.text}"\n'
-                  'Image: "${_imageController.text}"\n'
-                  'Ingredients: "${_ingredientsController.text}"\n'
-                  'Directions: "${_directionsController.text}"\n'
-                  'Notes: "${_notesController.text}"\n'
-                  'Tags: "${_tagsController.text}"\n'
-                  ),
-              );
-            },
-          );
-        },
-        tooltip: 'Show me the value!',
-        child: const Icon(Icons.text_fields),
       ),
     );
   }
