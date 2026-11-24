@@ -1,101 +1,212 @@
-// import 'package:flutter/material.dart';
-// import '../presenters/recipe_presenter.dart';
+import 'package:flutter/material.dart';
 
-// class RecipeScreen extends StatefulWidget {
-//   const RecipeScreen({super.key});
+class ExampleIngredientModel {
+  final String name;
+  final String measurement;
 
-//   @override
-//   State<RecipeScreen> createState() => _RecipeScreenState();
-// }
+  ExampleIngredientModel({required this.name, required this.measurement});
+}
 
-// class _RecipeScreenState extends State<RecipeScreen> {
-//   late final RecipePresenter _presenter;
+class RecipePage extends StatefulWidget {
+  const RecipePage({super.key});
 
-//   bool _isLoading = false;
-//   RecipeModel? _recipe;
-//   String? _errorMessage;
+  @override
+  State<RecipePage> createState() => _RecipeScreenState();
+}
 
-//   @override
-//   void initState() {
-//     super.initState();
-//     _presenter = RecipePresenter(this);
-//     _presenter.loadRecipe('123'); // Trigger presenter action
-//   }
+class _RecipeScreenState extends State<RecipePage> {
 
-//   @override
-//   void showLoading() {
-//     // This method is called by the presenter to indicate loading state
-//     setState(() {
-//       _isLoading = true;
-//       _errorMessage = null;
-//     });
-//   }
 
-//   @override
-//   void hideLoading() {
-//     // This method is called by the presenter to hide loading state
-//     setState(() {
-//       _isLoading = false;
-//     });
-//   }
+  String title = 'Recipe Title';
+  final String recipeId = 'recipeID';
+  final String createdBy = 'John Chef';
+  double rating = 4.8;
+  String imageTEMP = 'img.jpg';
+  List<String> tags = ['tag1', 'tag2', 'tag3'];
+  int servings = 2;
+  double minutes = 30.0;
+  static final Map<double, ExampleIngredientModel> ingredientsAmounts = {
+    1.0: ExampleIngredientModel(name: 'butter', measurement: 'cup'),
+    2.0: ExampleIngredientModel(name: 'flour', measurement: 'lb'),
+    3.0: ExampleIngredientModel(name: 'sugar', measurement: 'g'),
+  };
+  String directions = 'Insert directions here';
+  String notes = 'Insert notes here';
 
-//   @override
-//   void showRecipe(RecipeModel recipe) {
-//     // This method is called by the presenter to display the recipe
-//     setState(() {
-//       _recipe = recipe;
-//     });
-//   }
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(title),
+          actions: [
+            Padding(
+              padding: const EdgeInsets.only(right: 16.0),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(Icons.star, color: Colors.amber, size: 20),
+                  SizedBox(width: 4),
+                  Text(
+                    rating.toString(),
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.all(16.0),
 
-//   @override
-//   void showError(String message) {
-//     // This method is called by the presenter to display an error message
-//     setState(() {
-//       _errorMessage = message;
-//     });
-//   }
 
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       appBar: AppBar(title: const Text('MVP in Flutter')),
-//       body: Center(
-//         child: _isLoading
-//             ? const CircularProgressIndicator()
-//             : _errorMessage != null
-//                 ? Text(_errorMessage!, style: const TextStyle(color: Colors.red))
-//                 : _recipe != null
-//                     ? Column(
-//                         mainAxisAlignment: MainAxisAlignment.center,
-//                         children: [
-//                           Text('Title: ${_recipe!.title}'),
-//                           Text('Rating: ${_recipe!.rating}'),
-//                         ],
-//                       )
-//                     : const Text('No recipe data'),
-//       ),
-//     );
-//   }
-// }
+        // 1. OUTER COLUMN (Vertical)
+        child: Column(
+          mainAxisSize: MainAxisSize.max,
+          children: [
 
-// class RecipePage extends StatelessWidget {
+            //IMAGE
+            Container(
+              decoration: BoxDecoration(
+                border: Border.all(color: Colors.black),
+                // borderRadius: BorderRadius.circular(10.0), // Rounds all 4 corners
+              ),
+              padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 30.0),
+              child: const Center(
+                child: Text('<Yummy food picture>'), //THIS IS WHERE THE IMAGE WILL GO
+              ),
+            ),
 
-//   final RecipePresenter presenter = RecipePresenter();
-//   RecipePage({super.key});
+            //BOX FOR CREATOR, SERVINGS, TIME
+            Container(
+              decoration: BoxDecoration(
+                border: Border.all(color: Colors.black),
+                // borderRadius: BorderRadius.circular(10.0), // Rounds all 4 corners
+              ),
+              padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 12.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  
+                //CREATED BY
+                  Expanded(
+                    child: Text('Posted by: $createdBy'),
+                  ),
 
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       appBar: AppBar(title: const Text('Recipe Page')),
-//       body: Center(
-//         child: ElevatedButton(
-//           onPressed: () {
-//             // Return to the previous page
-//             Navigator.pop(context);
-//           },
-//           child: const Text('Go Back'),
-//         ),
-//       ),
-//     );
-//   }
-// }
+                const SizedBox(width: 12.0), // Spacing between text
+
+                //SERVINGS
+                  Expanded(
+                    child: Text('Serves: $servings'),
+                  ),
+
+                const SizedBox(width: 12.0), // Spacing between text
+                
+                //TIME
+                  Expanded(
+                    child: Text('Time: $minutes'),
+                  ),
+
+                ],
+              ),
+            ),
+
+            // 2. MIDDLE ROW (Horizontal)
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // 3A. FIRST INNER COLUMN (Red Outline)
+                Expanded(
+                  child: Column(
+                    children: [
+                      Container(
+                        decoration: BoxDecoration(
+                          border: Border.all(color: Colors.black),
+                          // borderRadius: BorderRadius.circular(10.0), // Rounds all 4 corners
+                        ),
+                        padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 12.0),
+                        child: Center(
+                          child: Column(
+                            children: [
+                              Text('Ingredients:'),
+                              Text(ingredientsAmounts.entries.map((entry) => '${entry.value.name} (${entry.key} ${entry.value.measurement})').join(', ')),
+                            ],
+                          ),
+                        ),
+                      ),
+                      Container(
+                        decoration: BoxDecoration(
+                          border: Border.all(color: Colors.black),
+                          // borderRadius: BorderRadius.circular(10.0), // Rounds all 4 corners
+                        ),
+                        padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 12.0),
+                        child: Center(
+                          child: Column(
+                            children: [
+                              Text('Nutrition Info:'),
+                              Text('insert nutrition info here'),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+            
+                // 3B. SECOND INNER COLUMN (Red Outline)
+                Expanded(
+                  child: Column(
+                    children: [
+                      Container(
+                        decoration: BoxDecoration(
+                          border: Border.all(color: Colors.black),
+                          // borderRadius: BorderRadius.circular(10.0), // Rounds all 4 corners
+                        ),
+                        padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 12.0),
+                        child: Center(
+                          child: Column(
+                            children: [
+                              Text('Directions:'),
+                              Text(directions),
+                            ],
+                          ),
+                        ),
+                      ),
+                      Container(
+                        decoration: BoxDecoration(
+                          border: Border.all(color: Colors.black),
+                          // borderRadius: BorderRadius.circular(10.0), // Rounds all 4 corners
+                        ),
+                        padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 12.0),
+                        child: Center(
+                          child: Column(
+                            children: [
+                              Text('Notes:'),
+                              Text(notes),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+
+            
+            //Tags
+            Container(
+              decoration: BoxDecoration(
+                border: Border.all(color: Colors.black),
+                // borderRadius: BorderRadius.circular(10.0), // Rounds all 4 corners
+              ),
+              padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 30.0),
+              child: Center(
+                child: Text('Taglist: $tags'),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
