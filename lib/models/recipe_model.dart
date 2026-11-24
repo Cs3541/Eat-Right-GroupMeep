@@ -1,4 +1,70 @@
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
+
+class RecipeModel {
+  final String title;
+  final String recipeId;
+  final String createdBy;
+  double? rating;
+  final String imageTEMP;
+  final String tags;
+  final int servings;
+  final double time;
+  final String ingredients;
+  final String directions;
+  final String notes;
+
+  RecipeModel({required this.title, required this.recipeId, required this.createdBy, this.rating, required this.imageTEMP, required this.tags, required this.servings, required this.time, required this.ingredients, required this.directions, required this.notes});
+
+  static final _firestore = FirebaseFirestore.instance;
+  static final _auth = FirebaseAuth.instance;
+
+  static Future<List<RecipeModel>> fetchRecipes() async {
+    final userId = _auth.currentUser?.uid;
+    if (userId == null) return [];
+
+    final snapshot = await _firestore
+      .collection('recipes')
+      // .where('title', isEqualTo: title)
+      .get();
+
+    return snapshot.docs.map((doc) {
+      final data = doc.data();
+      return RecipeModel(
+        title: data['title'],
+        recipeId: data['RecipeId'],
+        createdBy: data['createdBy'],
+        rating: data['rating'],
+        imageTEMP: data['imageTEMP'],
+        tags: data['tags'],
+        servings: data['servings'],
+        time: (data['time'] as num).toDouble(),
+        ingredients: data['ingredients'],
+        directions: data['directions'],
+        notes: data['notes'],
+        );
+      }).toList();
+    }
+
+    static Future<void> addRecipe(String title, String createdBy, double? rating, String imageTEMP, String tags, int servings, double time, String ingredients, String directions, String notes) async {
+
+      final newRef = _firestore.collection('recipes').doc();
+      await newRef.set({
+        'RecipeId': newRef.id,
+        'title': title,
+        'createdBy': createdBy,
+        'rating': rating,
+        'imageTEMP': imageTEMP,
+        'tags': tags,
+        'servings': servings,
+        'time': time,
+        'ingredients': ingredients,
+        'directions': directions,
+        'notes': notes,
+      });
+    }
+}
 // import 'package:cloud_firestore/cloud_firestore.dart';
 // import 'package:firebase_auth/firebase_auth.dart';
 // import 'ingredient_model.dart';

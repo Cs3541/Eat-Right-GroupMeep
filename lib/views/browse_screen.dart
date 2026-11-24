@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'recipe_page.dart';
 import 'create_recipe_screen.dart';
+import '../presenters/recipe_presenter.dart';
 
 //Branching successful?
 
@@ -12,6 +13,20 @@ class BrowseScreen extends StatefulWidget {
 }
 
 class _BrowseScreenState extends State<BrowseScreen> {
+  final RecipePresenter presenter = RecipePresenter();
+  bool _isLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadRecipes();
+  }
+
+  Future<void> _loadRecipes() async {
+    await presenter.loadRecipes();
+    setState(() => _isLoading = false);
+  }
+  
   final TextEditingController _searchController = TextEditingController();
   
   // State for SearchBy dropdown
@@ -46,6 +61,11 @@ class _BrowseScreenState extends State<BrowseScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final recipes = presenter.recipes;
+    if (_isLoading) {
+      return const Center(child: CircularProgressIndicator());
+    }
+    
     return Scaffold(
       appBar: AppBar(
         title: const Text('Search & Filter'),
@@ -278,32 +298,26 @@ class _BrowseScreenState extends State<BrowseScreen> {
                 color: Colors.grey[200],
                 borderRadius: BorderRadius.circular(8),
               ),
-              child: const SingleChildScrollView(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text('Recipe 1'),
-                    SizedBox(height: 10),
-                    Text('Recipe 2'),
-                    SizedBox(height: 10),
-                    Text('Recipe 3'),
-                    SizedBox(height: 10),
-                    Text('Recipe 4'),
-                    SizedBox(height: 10),
-                    Text('Recipe 5'),
-                    SizedBox(height: 10),
-                    Text('Recipe 6'),
-                    SizedBox(height: 10),
-                    Text('Recipe 7'),
-                    SizedBox(height: 10),
-                    Text('Recipe 8'),
-                    SizedBox(height: 10),
-                    Text('Recipe 9'),
-                    SizedBox(height: 10),
-                    Text('Recipe 10'),
-                  ],
-                ),
+              child: ListView.builder(
+                padding: const EdgeInsets.all(10.0),
+                itemCount: recipes.length,
+                itemBuilder: (context, index) {
+                  return Padding(
+                    padding: const EdgeInsets.only(bottom: 10.0),
+                    child: ElevatedButton(
+                      onPressed: () {
+                        // Navigate to the recipe page
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => RecipePage()),
+                        );
+                      },
+                      child: Text(recipes[index].title),
+                    ),
+                  );
+                },
               ),
+
             ),
 
             // Expanded(

@@ -1,3 +1,26 @@
+import '../models/recipe_model.dart';
+
+class RecipePresenter {
+    final List<RecipeModel> _recipes = [];
+
+    List<RecipeModel> get recipes => _recipes;
+
+    Future<void> loadRecipes() async {
+      final fetched = await RecipeModel.fetchRecipes();
+      _recipes.clear();
+      _recipes.addAll(fetched);
+    }
+
+    Future<void> addRecipe(String title, String createdBy, double? rating, String imageTEMP, String tags, int servings, double time, String ingredients, String directions, String notes) async {
+      await RecipeModel.addRecipe(title, createdBy, rating, imageTEMP, tags, servings, time, ingredients, directions, notes);
+      _recipes.add(RecipeModel(title: title, recipeId: '', createdBy: createdBy, rating: rating, imageTEMP: imageTEMP, tags: tags, servings: servings, time: time, ingredients: ingredients, directions: directions, notes: notes));
+    }
+}
+
+
+
+
+
 // import 'package:groupmeepeatright/views/recipe_page.dart';
 
 // import '../models/recipe_model.dart';
