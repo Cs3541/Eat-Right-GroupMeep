@@ -40,7 +40,7 @@ class _CreateRecipeScreenState extends State<CreateRecipeScreen> {
         'directions': directions,
         'notes': notes,
         'tags': tags,
-        'createdAt': FieldValue.serverTimestamp(),
+        // 'createdAt': FieldValue.serverTimestamp(),
       });
 
       _titleController.clear();
