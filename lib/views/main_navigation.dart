@@ -50,9 +50,9 @@ class _MainNavigationScreenState
         // Screens available when logged in
         final List<Widget> loggedInScreens = [
           HomeScreen(),
+          CalendarApp(),
           DashboardPage(),
           BrowseScreen(),
-          CalendarApp(),
           AnalyticsPageScreen(),
           ProfileScreen(),
         ];
@@ -66,7 +66,7 @@ class _MainNavigationScreenState
         final List<Widget> screens =
             isLoggedIn ? loggedInScreens : loggedOutScreens;
 
-        // Navigation items
+        
         final List<BottomNavigationBarItem> navItems =
             isLoggedIn
                 ? const [
@@ -75,16 +75,16 @@ class _MainNavigationScreenState
                       label: 'Home',
                     ),
                     BottomNavigationBarItem(
+                      icon: Icon(Icons.calendar_today),
+                      label: 'Planner',
+                    ),
+                    BottomNavigationBarItem(
                       icon: Icon(Icons.dashboard),
                       label: 'Dashboard',
                     ),
                     BottomNavigationBarItem(
                       icon: Icon(Icons.search),
                       label: 'Browse',
-                    ),
-                    BottomNavigationBarItem(
-                      icon: Icon(Icons.calendar_today),
-                      label: 'Planner',
                     ),
                     BottomNavigationBarItem(
                       icon: Icon(Icons.analytics),
