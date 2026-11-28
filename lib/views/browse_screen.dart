@@ -3,7 +3,7 @@ import 'package:groupmeepeatright/models/recipe_model.dart';
 import 'recipe_page.dart';
 import 'create_recipe_screen.dart';
 import '../presenters/recipe_presenter.dart';
-import 'search_test.dart';
+// import 'search_test.dart';
 
 //Branching successful?
 
@@ -288,16 +288,16 @@ class _BrowseScreenState extends State<BrowseScreen> {
             const SizedBox(height: 10.0),
             
             // Button to navigate to the Recipe Page
-            ElevatedButton(
-              onPressed: () {
-                // Navigate to the second page
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => ItemSelectorScreen()),
-                );
-              },
-              child: const Text('Go to Search Page'),
-            ),
+            // ElevatedButton(
+            //   onPressed: () {
+            //     // Navigate to the second page
+            //     Navigator.push(
+            //       context,
+            //       MaterialPageRoute(builder: (context) => ItemSelectorScreen()),
+            //     );
+            //   },
+            //   child: const Text('Go to Search Page'),
+            // ),
             
             
             // Button to navigate to the CreateRecipe Page
