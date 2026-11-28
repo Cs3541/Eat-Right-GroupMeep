@@ -10,6 +10,66 @@ class CreateRecipeScreen extends StatefulWidget {
 }
 
 class _CreateRecipeScreenState extends State<CreateRecipeScreen> {
+  // 1. Master list of all items
+  final List<String> _allIngredients = [
+    'Apple',
+    'Banana',
+    'Cherry',
+    'Date',
+    'Elderberry',
+    'Fig',
+    'Grape',
+  ];
+
+  // 2. List that holds the filtered results
+  List<String> _filteredIngredients = [];
+
+  // 2. List that holds the selected ingredients
+  List<String> _selectedIngredients = [];
+
+  @override
+  void initState() {
+    super.initState();
+    // Show all items initially
+    _filteredIngredients = _allIngredients;
+  }
+
+  // 3. Filter logic triggered on text change
+  void _runFilter(String enteredKeyword) {
+    List<String> results = [];
+    if (enteredKeyword.isEmpty) {
+      results = _allIngredients;
+    } else {
+      results = _allIngredients
+          .where((item) =>
+              item.toLowerCase().contains(enteredKeyword.toLowerCase()))
+          .toList();
+    }
+
+    setState(() {
+      _filteredIngredients = results;
+    });
+  }
+
+
+  // Add or remove item from the new list
+  void _toggleSelection(String ingredient) {
+    setState(() {
+      if (_selectedIngredients.contains(ingredient)) {
+        _selectedIngredients.remove(ingredient);
+      } else {
+        _selectedIngredients.add(ingredient);
+      }
+    });
+  }
+
+  // Function to handle ingredient selection
+  void _selectIngredient(String ingredient) {
+    setState(() {
+      _selectedIngredients.add(ingredient);
+      _ingredientsController.text = _selectedIngredients.join(', ');
+    });
+  }
 
   final TextEditingController _titleController = TextEditingController();
   final TextEditingController _imageController = TextEditingController();
@@ -94,9 +154,62 @@ class _CreateRecipeScreenState extends State<CreateRecipeScreen> {
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
         child: Column(
+          mainAxisSize: MainAxisSize.min,
           
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
+
+            // Ingredients Search
+            TextField(
+              onChanged: (value) => _runFilter(value),
+              onTap: () {
+                // Show the ingredient list when the field is tapped
+              },
+              decoration: const InputDecoration(
+                labelText: 'Search Ingredients',
+                suffixIcon: Icon(Icons.search),
+              ),
+            ),
+            const SizedBox(height: 20),
+
+            // Display the New List (Selected Items)
+            if (_selectedIngredients.isNotEmpty) ...[
+              const Text(
+                'Selected List:',
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
+              Wrap(
+                spacing: 8.0,
+                children: _selectedIngredients.map((item) {
+                  return Chip(
+                    label: Text(item),
+                    onDeleted: () => _toggleSelection(item),
+                  );
+                }).toList(),
+              ),
+              const Divider(height: 24),
+            ],
+
+            SizedBox(
+              height: 200,
+              child: ListView.builder(
+                itemCount: _filteredIngredients.length,
+                itemBuilder: (context, index) {
+                  final ingredient = _filteredIngredients[index];
+                  final isSelected = _selectedIngredients.contains(ingredient);
+                  return ListTile(
+                    title: Text(ingredient),
+                    trailing: Icon(
+                      isSelected ? Icons.check_circle : Icons.add_circle_outline,
+                      color: isSelected ? Colors.green : null,
+                    ),
+                    onTap: () => _toggleSelection(ingredient),
+                  );
+                },
+              ),
+            ),
+            const SizedBox(height: 20),
+
             // TITLE INPUT FIELD
             TextField(
               controller: _titleController,

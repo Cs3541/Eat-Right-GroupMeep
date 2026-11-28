@@ -54,7 +54,7 @@ class _BrowseScreenState extends State<BrowseScreen> {
     setState(() => _isLoading = false);
   }
   
-  final TextEditingController _searchController = TextEditingController();
+  // final TextEditingController _searchController = TextEditingController();
   
   // State for SearchBy dropdown
   String? _selectedSearch;
@@ -80,11 +80,11 @@ class _BrowseScreenState extends State<BrowseScreen> {
   String? _filterOther;
   final List<String> _filterOtherOptions = ['Baked Goods', 'Pasta', 'Salads'];
 
-  @override
-  void dispose() {
-    _searchController.dispose();
-    super.dispose();
-  }
+  // @override
+  // void dispose() {
+  //   _searchController.dispose();
+  //   super.dispose();
+  // }
 
   @override
   Widget build(BuildContext context) {
