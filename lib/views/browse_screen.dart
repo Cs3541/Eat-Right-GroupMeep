@@ -293,7 +293,7 @@ class _BrowseScreenState extends State<BrowseScreen> {
                 // Navigate to the second page
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => SearchableListScreen()),
+                  MaterialPageRoute(builder: (context) => ItemSelectorScreen()),
                 );
               },
               child: const Text('Go to Search Page'),

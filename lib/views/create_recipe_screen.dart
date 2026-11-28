@@ -2,6 +2,19 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
+class SelectedItem {
+  final String name;
+  final TextEditingController amountController;
+
+  SelectedItem({required this.name, String initialAmount = '1'})
+      : amountController = TextEditingController(text: initialAmount);
+
+  // Clean up the controller when the item is removed
+  void dispose() {
+    amountController.dispose();
+  }
+}
+
 class CreateRecipeScreen extends StatefulWidget {
   const CreateRecipeScreen({super.key});
 
@@ -11,63 +24,39 @@ class CreateRecipeScreen extends StatefulWidget {
 
 class _CreateRecipeScreenState extends State<CreateRecipeScreen> {
   // 1. Master list of all items
-  final List<String> _allIngredients = [
-    'Apple',
-    'Banana',
-    'Cherry',
-    'Date',
-    'Elderberry',
-    'Fig',
-    'Grape',
+  final List<String> _allItems = [
+    'Apples',
+    'Bananas',
+    'Cherries',
+    'Dates',
+    'Elderberries',
+    'Figs',
+    'Grapes',
+    'Carrots',
+    'Celery',
+    'Chicken Breasts',
+    'Olive Oils',
+    'Rices',
+    'Tomatoes',
   ];
 
-  // 2. List that holds the filtered results
-  List<String> _filteredIngredients = [];
+  // 2. Your new list holding selected items + their amounts
+  final List<SelectedItem> _selectedItems = [];
 
-  // 2. List that holds the selected ingredients
-  List<String> _selectedIngredients = [];
-
-  @override
-  void initState() {
-    super.initState();
-    // Show all items initially
-    _filteredIngredients = _allIngredients;
-  }
-
-  // 3. Filter logic triggered on text change
-  void _runFilter(String enteredKeyword) {
-    List<String> results = [];
-    if (enteredKeyword.isEmpty) {
-      results = _allIngredients;
-    } else {
-      results = _allIngredients
-          .where((item) =>
-              item.toLowerCase().contains(enteredKeyword.toLowerCase()))
-          .toList();
-    }
+  void _addItem(String itemName) {
+    // Optional: Prevent duplicates
+    if (_selectedItems.any((item) => item.name == itemName)) return;
 
     setState(() {
-      _filteredIngredients = results;
+      _selectedItems.add(SelectedItem(name: itemName));
     });
   }
+  
 
-
-  // Add or remove item from the new list
-  void _toggleSelection(String ingredient) {
+  void _removeItem(int index) {
     setState(() {
-      if (_selectedIngredients.contains(ingredient)) {
-        _selectedIngredients.remove(ingredient);
-      } else {
-        _selectedIngredients.add(ingredient);
-      }
-    });
-  }
-
-  // Function to handle ingredient selection
-  void _selectIngredient(String ingredient) {
-    setState(() {
-      _selectedIngredients.add(ingredient);
-      _ingredientsController.text = _selectedIngredients.join(', ');
+      _selectedItems[index].dispose();
+      _selectedItems.removeAt(index);
     });
   }
 
@@ -126,6 +115,11 @@ class _CreateRecipeScreenState extends State<CreateRecipeScreen> {
 
   @override //cleanup controllers
   void dispose() {
+    for (var item in _selectedItems) {
+      if (item is TextEditingController) {
+        item.dispose();
+      }
+    }
     _titleController.dispose();
     _imageController.dispose();
     _ingredientsController.dispose();
@@ -160,50 +154,75 @@ class _CreateRecipeScreenState extends State<CreateRecipeScreen> {
           children: [
 
             // Ingredients Search
-            TextField(
-              onChanged: (value) => _runFilter(value),
-              onTap: () {
-                // Show the ingredient list when the field is tapped
+
+            Autocomplete<String>(
+              optionsBuilder: (TextEditingValue textEditingValue) {
+                if (textEditingValue.text.isEmpty) {
+                  return const Iterable<String>.empty();
+                }
+                return _allItems.where((item) => item
+                    .toLowerCase()
+                    .contains(textEditingValue.text.toLowerCase()));
               },
-              decoration: const InputDecoration(
-                labelText: 'Search Ingredients',
-                suffixIcon: Icon(Icons.search),
-              ),
+              onSelected: (String selection) {
+                _addItem(selection);
+              },
+              fieldViewBuilder: (context, controller, focusNode, onSubmitted) {
+                return TextField(
+                  controller: controller,
+                  focusNode: focusNode,
+                  decoration: const InputDecoration(
+                    labelText: 'Search items...',
+                    prefixIcon: Icon(Icons.search),
+                    border: OutlineInputBorder(),
+                  ),
+                );
+              },
             ),
             const SizedBox(height: 20),
-
-            // Display the New List (Selected Items)
-            if (_selectedIngredients.isNotEmpty) ...[
-              const Text(
-                'Selected List:',
-                style: TextStyle(fontWeight: FontWeight.bold),
-              ),
-              Wrap(
-                spacing: 8.0,
-                children: _selectedIngredients.map((item) {
-                  return Chip(
-                    label: Text(item),
-                    onDeleted: () => _toggleSelection(item),
-                  );
-                }).toList(),
-              ),
-              const Divider(height: 24),
-            ],
 
             SizedBox(
               height: 200,
               child: ListView.builder(
-                itemCount: _filteredIngredients.length,
+                itemCount: _selectedItems.length,
                 itemBuilder: (context, index) {
-                  final ingredient = _filteredIngredients[index];
-                  final isSelected = _selectedIngredients.contains(ingredient);
-                  return ListTile(
-                    title: Text(ingredient),
-                    trailing: Icon(
-                      isSelected ? Icons.check_circle : Icons.add_circle_outline,
-                      color: isSelected ? Colors.green : null,
+                  final item = _selectedItems[index];
+                  return Card(
+                    margin: const EdgeInsets.only(bottom: 8),
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 12, vertical: 8),
+                      child: Row(
+                        children: [
+                          // Item Name
+                          Expanded(
+                            child: Text(
+                              item.name,
+                              style: const TextStyle(fontSize: 16),
+                            ),
+                          ),
+                          // Amount Text Box
+                          SizedBox(
+                            width: 80,
+                            child: TextField(
+                              controller: item.amountController,
+                              keyboardType: TextInputType.number,
+                              textAlign: TextAlign.center,
+                              decoration: const InputDecoration(
+                                labelText: 'Qty',
+                                border: OutlineInputBorder(),
+                                isDense: true,
+                              ),
+                            ),
+                          ),
+                          // Delete Button
+                          IconButton(
+                            icon: const Icon(Icons.delete, color: Colors.red),
+                            onPressed: () => _removeItem(index),
+                          ),
+                        ],
+                      ),
                     ),
-                    onTap: () => _toggleSelection(ingredient),
                   );
                 },
               ),
