@@ -16,7 +16,10 @@ class _CreateRecipeScreenState extends State<CreateRecipeScreen> {
   final TextEditingController _ingredientsController = TextEditingController();
   final TextEditingController _directionsController = TextEditingController();
   final TextEditingController _notesController = TextEditingController();
+  final TextEditingController _servingsController = TextEditingController();
+  final TextEditingController _minutesController = TextEditingController();
   final TextEditingController _tagsController = TextEditingController();
+  
 
 
   //Function to send data to Firestore
@@ -28,8 +31,10 @@ class _CreateRecipeScreenState extends State<CreateRecipeScreen> {
     final directions = _directionsController.text.trim();
     final notes = _notesController.text.trim();
     final tags = _tagsController.text.trim();
+    final servings = double.tryParse(_servingsController.text.trim()) ?? 0.0;
+    final minutes = double.tryParse(_minutesController.text.trim()) ?? 0.0;
 
-    if (title.isEmpty || image.isEmpty || ingredients.isEmpty || directions.isEmpty || notes.isEmpty || tags.isEmpty) return; // Prevent saving blank entries
+    if (title.isEmpty || image.isEmpty || ingredients.isEmpty || directions.isEmpty || notes.isEmpty || tags.isEmpty || servings <= 0 || minutes <= 0) return; // Prevent saving blank entries
 
     try {
       await FirebaseFirestore.instance.collection('recipes').add({
@@ -40,6 +45,8 @@ class _CreateRecipeScreenState extends State<CreateRecipeScreen> {
         'directions': directions,
         'notes': notes,
         'tags': tags,
+        'servings': servings,
+        'minutes': minutes,
         // 'createdAt': FieldValue.serverTimestamp(),
       });
 
@@ -48,6 +55,8 @@ class _CreateRecipeScreenState extends State<CreateRecipeScreen> {
       _ingredientsController.clear();
       _directionsController.clear();
       _notesController.clear();
+      _servingsController.clear();
+      _minutesController.clear();
       _tagsController.clear(); // Clear the boxes after saving
     } catch (e) {
       debugPrint('Failed to write to Firestore: $e');
@@ -62,6 +71,8 @@ class _CreateRecipeScreenState extends State<CreateRecipeScreen> {
     _ingredientsController.dispose();
     _directionsController.dispose();
     _notesController.dispose();
+    _servingsController.dispose();
+    _minutesController.dispose();
     _tagsController.dispose();
     super.dispose();
   }
@@ -115,6 +126,40 @@ class _CreateRecipeScreenState extends State<CreateRecipeScreen> {
               ),
               onChanged: (value) {
                 // Handle image URL changes here
+              },
+            ),
+            const SizedBox(height: 10.0),
+
+            // SERVINGS INPUT
+            TextField(
+              controller: _servingsController,
+              decoration: InputDecoration(
+                hintText: 'Servings...',
+                prefixIcon: const Icon(Icons.people),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(10.0),
+                ),
+                contentPadding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 14.0),
+              ),
+              onChanged: (value) {
+                // Handle servings changes here
+              },
+            ),
+            const SizedBox(height: 10.0),
+
+            // MINUTES INPUT
+            TextField(
+              controller: _minutesController,
+              decoration: InputDecoration(
+                hintText: 'Minutes...',
+                prefixIcon: const Icon(Icons.timer),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(10.0),
+                ),
+                contentPadding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 14.0),
+              ),
+              onChanged: (value) {
+                // Handle minutes changes here
               },
             ),
             const SizedBox(height: 10.0),

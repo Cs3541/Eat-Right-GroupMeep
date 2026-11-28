@@ -9,13 +9,13 @@ class RecipeModel {
   // double? rating;
   final String image;
   final String tags;
-  // final int servings;
-  // final double time;
+  final double servings;
+  final double minutes;
   final String ingredients;
   final String directions;
   final String notes;
 
-  RecipeModel({required this.title, /* required this.recipeId, */ required this.createdBy, /* this.rating, */ required this.image, required this.tags, /* required this.servings, */ /* required this.time, */ required this.ingredients, required this.directions, required this.notes});
+  RecipeModel({required this.title, /* required this.recipeId, */ required this.createdBy, /* this.rating, */ required this.image, required this.tags, required this.servings, required this.minutes, required this.ingredients, required this.directions, required this.notes});
 
   static final _firestore = FirebaseFirestore.instance;
   static final _auth = FirebaseAuth.instance;
@@ -38,8 +38,8 @@ class RecipeModel {
         // rating: data['rating'],
         image: data['image'],
         tags: data['tags'],
-        // servings: data['servings'],
-        // time: (data['time'] as num).toDouble(),
+        servings: (data['servings'] as num).toDouble(),
+        minutes: (data['minutes'] as num).toDouble(),
         ingredients: data['ingredients'],
         directions: data['directions'],
         notes: data['notes'],
@@ -47,7 +47,7 @@ class RecipeModel {
       }).toList();
     }
 
-    static Future<void> addRecipe(String title, String createdBy, /* double? rating, */ String image, String tags, /* int servings, double time, */ String ingredients, String directions, String notes) async {
+    static Future<void> addRecipe(String title, String createdBy, /* double? rating, */ String image, String tags, double servings, double minutes, String ingredients, String directions, String notes) async {
 
       final newRef = _firestore.collection('recipes').doc();
       await newRef.set({
@@ -57,8 +57,8 @@ class RecipeModel {
         // 'rating': rating,
         'image': image,
         'tags': tags,
-        // 'servings': servings,
-        // 'time': time,
+        'servings': servings,
+        'minutes': minutes,
         'ingredients': ingredients,
         'directions': directions,
         'notes': notes,

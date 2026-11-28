@@ -97,14 +97,14 @@ class _RecipeScreenState extends State<RecipePage> {
 
                 //SERVINGS
                   Expanded(
-                    child: Text('Serves: $servings'),
+                    child: Text('Serves: ${widget.recipe.servings}'),
                   ),
 
                 const SizedBox(width: 12.0), // Spacing between text
                 
                 //TIME
                   Expanded(
-                    child: Text('Time: $minutes'),
+                    child: Text('Minutes: ${widget.recipe.minutes}'),
                   ),
 
                 ],

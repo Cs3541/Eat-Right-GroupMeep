@@ -11,9 +11,9 @@ class RecipePresenter {
       _recipes.addAll(fetched);
     }
 
-    Future<void> addRecipe(String title, String createdBy, /*double? rating, */ String image, String tags, /* int servings, double time, */ String ingredients, String directions, String notes) async {
-      await RecipeModel.addRecipe(title, createdBy, /* rating, */ image, tags, /* servings, time, */ ingredients, directions, notes);
-      _recipes.add(RecipeModel(title: title, /* recipeId: '', */ /* rating: rating, */ /* servings: servings, */ /* time: time, */ createdBy: createdBy, image: image, tags: tags, ingredients: ingredients, directions: directions, notes: notes));
-      // Note: The RecipeModel constructor does not include recipeId, rating, servings, or time as they are commented out in the model.
+    Future<void> addRecipe(String title, String createdBy, /*double? rating, */ String image, String tags, double servings, double minutes, String ingredients, String directions, String notes) async {
+      await RecipeModel.addRecipe(title, createdBy, /* rating, */ image, tags, servings, minutes, ingredients, directions, notes);
+      _recipes.add(RecipeModel(title: title, /* recipeId: '', */ /* rating: rating, */ servings: servings, minutes: minutes, createdBy: createdBy, image: image, tags: tags, ingredients: ingredients, directions: directions, notes: notes));
+      // Note: The RecipeModel constructor does not include recipeId or rating as they are commented out in the model.
     }
 }
