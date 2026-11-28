@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import '../presenters/ingredient_presenter.dart';
-import '../models/ingredient_model.dart';
-import '../models/ingredient_amount.dart';
 
 class SelectedItem {
   final String name;
@@ -26,35 +23,40 @@ class CreateRecipeScreen extends StatefulWidget {
 }
 
 class _CreateRecipeScreenState extends State<CreateRecipeScreen> {
-  
-  final IngredientPresenter presenter = IngredientPresenter();
-  bool _isLoading = true;
-
-  
-  // 1. Master list of all ingredients
-  List<IngredientModel> get _allIngredients => presenter.ingredients;
+  // 1. Master list of all items
+  final List<String> _allItems = [
+    'Apples',
+    'Bananas',
+    'Cherries',
+    'Dates',
+    'Elderberries',
+    'Figs',
+    'Grapes',
+    'Carrots',
+    'Celery',
+    'Chicken Breasts',
+    'Olive Oils',
+    'Rices',
+    'Tomatoes',
+  ];
 
   // 2. Your new list holding selected items + their amounts
-  final List<SelectedItem> _selectedIngredients = [];
+  final List<SelectedItem> _selectedItems = [];
 
   void _addItem(String itemName) {
     // Optional: Prevent duplicates
-    if (_selectedIngredients.any((item) {
-      return item.name == itemName;
-    })) {
-      return; 
-    }
+    if (_selectedItems.any((item) => item.name == itemName)) return;
 
     setState(() {
-      _selectedIngredients.add(SelectedItem(name: itemName));
+      _selectedItems.add(SelectedItem(name: itemName));
     });
   }
   
 
   void _removeItem(int index) {
     setState(() {
-      _selectedIngredients[index].dispose();
-      _selectedIngredients.removeAt(index);
+      _selectedItems[index].dispose();
+      _selectedItems.removeAt(index);
     });
   }
 
@@ -113,7 +115,7 @@ class _CreateRecipeScreenState extends State<CreateRecipeScreen> {
 
   @override //cleanup controllers
   void dispose() {
-    for (var item in _selectedIngredients) {
+    for (var item in _selectedItems) {
       if (item is TextEditingController) {
         item.dispose();
       }
@@ -158,9 +160,9 @@ class _CreateRecipeScreenState extends State<CreateRecipeScreen> {
                 if (textEditingValue.text.isEmpty) {
                   return const Iterable<String>.empty();
                 }
-                return _allIngredients
-                    .where((ingredient) => ingredient.name.contains(textEditingValue.text))
-                    .map((ingredient) => ingredient.name); // Converts Iterable<IngredientModel> to Iterable<String>
+                return _allItems.where((item) => item
+                    .toLowerCase()
+                    .contains(textEditingValue.text.toLowerCase()));
               },
               onSelected: (String selection) {
                 _addItem(selection);
@@ -182,9 +184,9 @@ class _CreateRecipeScreenState extends State<CreateRecipeScreen> {
             SizedBox(
               height: 200,
               child: ListView.builder(
-                itemCount: _selectedIngredients.length,
+                itemCount: _selectedItems.length,
                 itemBuilder: (context, index) {
-                  final item = _selectedIngredients[index];
+                  final item = _selectedItems[index];
                   return Card(
                     margin: const EdgeInsets.only(bottom: 8),
                     child: Padding(

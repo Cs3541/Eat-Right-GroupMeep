@@ -1,7 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import '../models/ingredient_model.dart';
-import '../models/ingredient_amount.dart';
 
 
 class RecipeModel {
@@ -13,7 +11,7 @@ class RecipeModel {
   final String tags;
   final double servings;
   final double minutes;
-  final List<IngredientAmount> ingredients;
+  final String ingredients;
   final String directions;
   final String notes;
 
@@ -33,12 +31,6 @@ class RecipeModel {
 
     return snapshot.docs.map((doc) {
       final data = doc.data();
-
-      final rawItems = data['ingredientList'] as List<dynamic>? ?? [];
-      final parsedItems = rawItems
-          .map((item) => IngredientAmount.fromMap(item as Map<IngredientModel, dynamic>))
-          .toList();
-
       return RecipeModel(
         title: data['title'],
         // recipeId: data['RecipeId'],
@@ -48,14 +40,14 @@ class RecipeModel {
         tags: data['tags'],
         servings: (data['servings'] as num).toDouble(),
         minutes: (data['minutes'] as num).toDouble(),
-        ingredients: parsedItems,
+        ingredients: data['ingredients'],
         directions: data['directions'],
         notes: data['notes'],
         );
       }).toList();
     }
 
-    static Future<void> addRecipe(String title, String createdBy, /* double? rating, */ String image, String tags, double servings, double minutes, List<IngredientAmount> ingredients, String directions, String notes) async {
+    static Future<void> addRecipe(String title, String createdBy, /* double? rating, */ String image, String tags, double servings, double minutes, String ingredients, String directions, String notes) async {
 
       final newRef = _firestore.collection('recipes').doc();
       await newRef.set({
@@ -67,7 +59,7 @@ class RecipeModel {
         'tags': tags,
         'servings': servings,
         'minutes': minutes,
-        'ingredientList': ingredients.map((ingredient) => ingredient.toMap()).toList(),
+        'ingredients': ingredients,
         'directions': directions,
         'notes': notes,
       });
