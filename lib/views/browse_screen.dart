@@ -265,16 +265,16 @@ class _BrowseScreenState extends State<BrowseScreen> {
             const SizedBox(height: 10.0),
             
             // Button to navigate to the Recipe Page
-            ElevatedButton(
-              onPressed: () {
-                // Navigate to the second page
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => RecipePage()),
-                );
-              },
-              child: const Text('Go to Recipe Page'),
-            ),
+            // ElevatedButton(
+            //   onPressed: () {
+            //     // Navigate to the second page
+            //     Navigator.push(
+            //       context,
+            //       MaterialPageRoute(builder: (context) => RecipePage()),
+            //     );
+            //   },
+            //   child: const Text('Go to Recipe Page'),
+            // ),
             
             
             // Button to navigate to the CreateRecipe Page
@@ -309,7 +309,9 @@ class _BrowseScreenState extends State<BrowseScreen> {
                         // Navigate to the recipe page
                         Navigator.push(
                           context,
-                          MaterialPageRoute(builder: (context) => RecipePage()),
+                          MaterialPageRoute(
+                            builder: (context) => RecipePage(recipe: recipes[index])
+                          ),
                         );
                       },
                       child: Text(recipes[index].title),

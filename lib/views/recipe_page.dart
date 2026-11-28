@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:groupmeepeatright/models/recipe_model.dart';
 
 class ExampleIngredientModel {
   final String name;
@@ -8,7 +9,9 @@ class ExampleIngredientModel {
 }
 
 class RecipePage extends StatefulWidget {
-  const RecipePage({super.key});
+  final RecipeModel recipe;
+
+  const RecipePage({super.key, required this.recipe});
 
   @override
   State<RecipePage> createState() => _RecipeScreenState();
@@ -37,7 +40,7 @@ class _RecipeScreenState extends State<RecipePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(title),
+        title: Text(widget.recipe.title),
           actions: [
             Padding(
               padding: const EdgeInsets.only(right: 16.0),
@@ -70,8 +73,8 @@ class _RecipeScreenState extends State<RecipePage> {
                 border: Border.all(color: Colors.black),
               ),
               padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 30.0),
-              child: const Center(
-                child: Text('<Yummy food picture>'), //THIS IS WHERE THE IMAGE WILL GO
+              child: Center(
+                child: Text(widget.recipe.image), //THIS IS WHERE THE IMAGE WILL GO
               ),
             ),
 
@@ -87,7 +90,7 @@ class _RecipeScreenState extends State<RecipePage> {
                   
                 //CREATED BY
                   Expanded(
-                    child: Text('Posted by: $createdBy'),
+                    child: Text('Posted by: ${widget.recipe.createdBy}'),
                   ),
 
                 const SizedBox(width: 12.0), // Spacing between text
@@ -161,7 +164,7 @@ class _RecipeScreenState extends State<RecipePage> {
                           child: Column(
                             children: [
                               Text('Directions:'),
-                              Text(directions),
+                              Text(widget.recipe.directions),
                             ],
                           ),
                         ),
@@ -175,7 +178,7 @@ class _RecipeScreenState extends State<RecipePage> {
                           child: Column(
                             children: [
                               Text('Notes:'),
-                              Text(notes),
+                              Text(widget.recipe.notes),
                             ],
                           ),
                         ),
@@ -194,7 +197,7 @@ class _RecipeScreenState extends State<RecipePage> {
               ),
               padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 30.0),
               child: Center(
-                child: Text('Taglist: $tags'),
+                child: Text('Taglist: ${widget.recipe.tags}'),
               ),
             ),
           ],
