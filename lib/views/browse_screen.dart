@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:groupmeepeatright/models/recipe_model.dart';
 import 'recipe_page.dart';
 import 'create_recipe_screen.dart';
 import '../presenters/recipe_presenter.dart';
+import 'search_test.dart';
 
 //Branching successful?
 
@@ -16,12 +18,37 @@ class _BrowseScreenState extends State<BrowseScreen> {
   final RecipePresenter presenter = RecipePresenter();
   bool _isLoading = true;
 
+  
+  List<RecipeModel> get recipes => presenter.recipes;
+  
+  List<RecipeModel> _filteredRecipes = [];
+
   @override
   void initState() {
     super.initState();
     _loadRecipes();
+    _filteredRecipes = recipes;
   }
 
+
+  // 3. Filter logic triggered on text change
+  void _runFilter(String enteredKeyword) {
+    List<RecipeModel> results = [];
+    if (enteredKeyword.isEmpty) {
+      results = recipes;
+    } else {
+      results = recipes
+          .where((recipe) =>
+              recipe.title.toLowerCase().contains(enteredKeyword.toLowerCase()))
+          .toList();
+    }
+
+    setState(() {
+      _filteredRecipes = results;
+    });
+  }
+
+  
   Future<void> _loadRecipes() async {
     await presenter.loadRecipes();
     setState(() => _isLoading = false);
@@ -61,7 +88,6 @@ class _BrowseScreenState extends State<BrowseScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final recipes = presenter.recipes;
     if (_isLoading) {
       return const Center(child: CircularProgressIndicator());
     }
@@ -77,18 +103,15 @@ class _BrowseScreenState extends State<BrowseScreen> {
           children: [
             // 1. Search Bar at the top
             TextField(
-              controller: _searchController,
+              onChanged: (value) => _runFilter(value),
               decoration: InputDecoration(
-                hintText: 'Search items...',
+                labelText: 'Search',
                 prefixIcon: const Icon(Icons.search),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(10.0),
                 ),
                 contentPadding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 14.0),
               ),
-              onChanged: (value) {
-                // Handle search query changes here
-              },
             ),
             const SizedBox(height: 10.0),
 
@@ -265,16 +288,16 @@ class _BrowseScreenState extends State<BrowseScreen> {
             const SizedBox(height: 10.0),
             
             // Button to navigate to the Recipe Page
-            // ElevatedButton(
-            //   onPressed: () {
-            //     // Navigate to the second page
-            //     Navigator.push(
-            //       context,
-            //       MaterialPageRoute(builder: (context) => RecipePage()),
-            //     );
-            //   },
-            //   child: const Text('Go to Recipe Page'),
-            // ),
+            ElevatedButton(
+              onPressed: () {
+                // Navigate to the second page
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => SearchableListScreen()),
+                );
+              },
+              child: const Text('Go to Search Page'),
+            ),
             
             
             // Button to navigate to the CreateRecipe Page
@@ -298,9 +321,10 @@ class _BrowseScreenState extends State<BrowseScreen> {
                 color: Colors.grey[200],
                 borderRadius: BorderRadius.circular(8),
               ),
-              child: ListView.builder(
+
+              child: _filteredRecipes.isNotEmpty? ListView.builder(
                 padding: const EdgeInsets.all(10.0),
-                itemCount: recipes.length,
+                itemCount: _filteredRecipes.length,
                 itemBuilder: (context, index) {
                   return Padding(
                     padding: const EdgeInsets.only(bottom: 10.0),
@@ -310,32 +334,16 @@ class _BrowseScreenState extends State<BrowseScreen> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => RecipePage(recipe: recipes[index])
+                            builder: (context) => RecipePage(recipe: _filteredRecipes[index])
                           ),
                         );
                       },
-                      child: Text(recipes[index].title),
+                      child: Text(_filteredRecipes[index].title),
                     ),
                   );
                 },
-              ),
-
-            ),
-
-            // Expanded(
-            //   child: Center(
-            //     child: Text(
-            //       'Search: "${_searchController.text}"\n'
-            //       'Search By: ${_selectedSearch ?? "None"}\n'
-            //       'Sort By: ${_selectedSort ?? "None"}\n'
-            //       'Filter Meal Type: ${_filterMealType ?? "None"}\n'
-            //       'Filter Ethnicity: ${_filterEthnicity ?? "None"}\n'
-            //       'Filter Other: ${_filterOther ?? "None"}',
-            //       textAlign: TextAlign.center,
-            //       style: const TextStyle(fontSize: 16.0, color: Colors.grey),
-            //     ),
-            //   ),
-            // ),
+              ): const Text('No results found'),
+            ), // End of Container for displaying filtered recipes
           ],
         ),
       ),
